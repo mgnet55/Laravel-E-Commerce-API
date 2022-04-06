@@ -17,7 +17,11 @@ class ShippingCompanyFactory extends Factory
     public function definition()
     {
         return [
-            //
+            'name'=>$this->faker->company(),
+            'user_id'=>10,
+            'phone'=>$this->faker->phoneNumber(),
+            'city_id'=>$this->faker->randomElement([1,2,3,4]),
+            'address_street'=>$this->faker->streetAddress(),
         ];
     }
 }

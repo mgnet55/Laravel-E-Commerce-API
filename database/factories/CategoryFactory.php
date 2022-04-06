@@ -18,9 +18,9 @@ class CategoryFactory extends Factory
     public function definition()
     {
         return [
-            'name' => $this->faker->name(),
-            'email' => $this->faker->unique()->safeEmail(),
-            'email_verified_at' => now(),
+            'name' => $this->faker->slug(3),
+            'image' => $this->faker->imageUrl(640, 480, 'animals', true),
+            'description'=>$this->faker->sentence(),
         ];
     }
 }
