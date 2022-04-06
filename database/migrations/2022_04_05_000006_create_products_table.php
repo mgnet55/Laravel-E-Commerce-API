@@ -20,15 +20,18 @@ return new class extends Migration
             $table->text('description');
             $table->integer('quantity');
             $table->float('price');
+            $table->float('discount')->default(0);
             $table->text('image');
-            $table->boolean('available')->default(1);
+            $table->boolean('available')->default(false);
             $table->unsignedBigInteger('user_id');
+            $table->unsignedBigInteger('category_id')->default(1);
+
             $table->foreign('user_id')
                   ->references('id')
                   ->on('users')
                   ->onupdate('cascade')
                   ->onDelete('cascade');
-            $table->unsignedBigInteger('category_id')->default(1);
+
             $table->foreign('category_id')
                   ->references('id')
                   ->on('categories')

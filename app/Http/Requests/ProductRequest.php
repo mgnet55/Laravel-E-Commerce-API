@@ -30,7 +30,7 @@ class ProductRequest extends FormRequest
             'quantity'=>'required|numeric',
             'price'=>'required|float',
             'user_id'=>'required|numeric|exists:users,id',
-            'cat_id'=>'required|numeric|exists:categories,id'
+            'category_id'=>'required|numeric|exists:categories,id'
         ];
         if($this->method() == 'POST')
         {

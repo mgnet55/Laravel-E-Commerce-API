@@ -26,10 +26,8 @@ class OrderRequest extends FormRequest
         return [
                 'city_id'=>'required|exists:cities,id',
                 'street'=>'required|string',
-                'status'=>'required|in:Processing,On the Way,Done',
-                'total_price'=>'required|float',
-                'shipping_id'=>'required|numeric|exists:shipping_companies,id',
-                'user_id'=>'required|numeric|exists:shipping_companies,id',
+                'status'=>'in:Processing,On way,Done',
+                'shipping_id'=>'numeric|exists:shipping_companies,id',
                 'notes'=>'string'
         ];
     }

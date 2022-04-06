@@ -15,30 +15,30 @@ return new class extends Migration
     {
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('city_id');
-            $table->string('street');
-            $table->enum('status',['Processing','On the Way','Done'])
-                  ->default('Processing');
-            $table->float('total_price');
-            $table->unsignedBigInteger('shipping_id');
-            $table->unsignedBigInteger('user_id');
-            $table->string('notes')->nullable();
             $table->timestamps();
             $table->softDeletes();
-            $table->foreign('shipping_id')
+            $table->string('payment_ref');
+            $table->unsignedBigInteger('city_id')->nullable();
+            $table->string('street');
+            $table->enum('status',['Processing','On way','Done'])->default('Processing');
+            $table->unsignedBigInteger('shipping_company_id')->nullable();
+            $table->unsignedBigInteger('user_id')->nullable();
+            $table->string('notes')->nullable();
+
+            $table->foreign('shipping_company_id')
                   ->references('id')
                   ->on('shipping_companies')
-                  ->onDelete('cascade')
+                  ->onDelete('set null')
                   ->onUpdate('cascade');
             $table->foreign('user_id')
                 ->references('id')
                 ->on('users')
-                ->onDelete('cascade')
+                ->onDelete('set null')
                 ->onUpdate('cascade');
             $table->foreign('city_id')
                 ->references('id')
                 ->on('cities')
-                ->onDelete('cascade')
+                ->onDelete('set null')
                 ->onUpdate('cascade');
         });
 

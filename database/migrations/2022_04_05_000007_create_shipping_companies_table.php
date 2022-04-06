@@ -16,7 +16,7 @@ return new class extends Migration
         Schema::create('shipping_companies', function (Blueprint $table) {
             $table->id();
             $table->string('name')->unique();
-            $table->foreignId('user_id')->constrained()->cascadeOnDelete()->cascadeOnUpdate();
+            $table->foreignId('user_id')->nullable()->constrained()->cascadeOnUpdate()->onDelete('set null');
             $table->string('phone',15);
             $table->foreignId('city_id')->constrained()->cascadeOnDelete()->cascadeOnUpdate();
             $table->string ('address_street');
