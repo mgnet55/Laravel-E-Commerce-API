@@ -13,9 +13,9 @@ class Order extends Model
                'city_id',
                'street',
                'status',
-               'total_price',
                'user_id',
-               'shipping_id'
+               'shipping_company_id',
+               'payment_ref'
            ];
 
 
