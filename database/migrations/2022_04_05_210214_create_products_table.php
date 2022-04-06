@@ -21,7 +21,7 @@ return new class extends Migration
             $table->integer('quantity');
             $table->float('price');
             $table->text('image');
-            $table->boolean('available');
+            $table->boolean('available')->default(1);
             $table->unsignedBigInteger('user_id');
             $table->foreign('user_id')
                   ->references('id')
