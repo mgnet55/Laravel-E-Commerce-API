@@ -28,8 +28,8 @@ return new class extends Migration
                   ->on('users')
                   ->onupdate('cascade')
                   ->onDelete('cascade');
-            $table->unsignedBigInteger('cat_id')->default(1);
-            $table->foreign('cat_id')
+            $table->unsignedBigInteger('category_id')->default(1);
+            $table->foreign('category_id')
                   ->references('id')
                   ->on('categories')
                   ->onupdate('cascade')
