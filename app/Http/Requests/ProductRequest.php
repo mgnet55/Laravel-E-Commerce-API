@@ -28,9 +28,9 @@ class ProductRequest extends FormRequest
             'name'=>'required|string',
             'description'=>'required|string',
             'quantity'=>'required|numeric',
-            'price'=>'required|numeric',
-            'user_id'=>'required|exists:users,id',
-            'cat_id'=>'required|exists:categories,id'
+            'price'=>'required|float',
+            'user_id'=>'required|numeric|exists:users,id',
+            'cat_id'=>'required|numeric|exists:categories,id'
         ];
         if($this->method() == 'POST')
         {
@@ -38,6 +38,6 @@ class ProductRequest extends FormRequest
         }
 
         return $rules;
-        
+
     }
 }
