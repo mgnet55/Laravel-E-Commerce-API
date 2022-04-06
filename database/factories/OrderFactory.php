@@ -21,7 +21,7 @@ class OrderFactory extends Factory
             'street'=>$this->faker->sentence,
             'status'=>$this->faker->randomElement(['Processing','On the Way','Done']),
             'total_price'=>$this->faker->randomFloat(2),
-            'shipping_id'=>1,
+            'shipping_company_id'=>1,
             'user_id'=>1,
             'notes'=>$this->faker->text
         ];

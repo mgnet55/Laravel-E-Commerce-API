@@ -23,7 +23,7 @@ class ProductFactory extends Factory
             'price' => $this->faker->randomElement([1,2,3,4,5]),
             'image'=>'https://dummyimage.com/800x494/000/fff&text=product+image',
             'user_id'=>$this->faker->randomElement([1,2,3,4,5]),
-            'cat_id'=>$this->faker->randomElement([1,2,3,4,5]),
+            'category_id'=>$this->faker->randomElement([1,2,3,4,5]),
         ];
     }
 }
