@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Product;
-use Illuminate\Http\Request;
+use App\Http\Requests\ProductRequest;
 
 class ProductController extends Controller
 {
@@ -34,7 +34,7 @@ class ProductController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    function store(Request $request)
+    function store(ProductRequest $request)
     {
       $input = Product::create($request->all());
       if($input){
@@ -75,7 +75,7 @@ class ProductController extends Controller
      * @param  \App\Models\Product  $product
      * @return \Illuminate\Http\Response
      */
-    function update(Request $request, Product $product){
+    function update(ProductRequest $request, Product $product){
 
         $product->update($request->all());
 
@@ -103,5 +103,5 @@ class ProductController extends Controller
         }
       }
 
-    
+
 }
