@@ -2,6 +2,8 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ProductController;
+use App\Http\Controllers\categoryController;
 
 /*
 |--------------------------------------------------------------------------
@@ -17,3 +19,12 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+// Products resource
+Route::apiResource("/products",ProductController::class);
+
+// Categories resource
+Route::apiResource("/categories",CategoryController::class);
+
+// Category products
+Route::get("/category/{category}/products",[CategoryController::class,"getCatProducts"]);

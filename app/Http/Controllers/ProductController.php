@@ -12,10 +12,11 @@ class ProductController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
-    {
-        //
-    }
+    function index(){
+
+        $products = Product::all();
+        return $products;
+      }
 
     /**
      * Show the form for creating a new resource.
@@ -33,10 +34,17 @@ class ProductController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    function store(Request $request)
     {
-        //
+      $input = Product::create($request->all());
+      if($input){
+        return response()->json([
+          'msg'=>'Done',
+          'new product' => $input
+        ]);
+      }
     }
+
 
     /**
      * Display the specified resource.
@@ -46,7 +54,7 @@ class ProductController extends Controller
      */
     public function show(Product $product)
     {
-          
+          return $product;
     }
 
     /**
@@ -67,10 +75,16 @@ class ProductController extends Controller
      * @param  \App\Models\Product  $product
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Product $product)
-    {
-        //
-    }
+    function update(Request $request, Product $product){
+
+        $product->update($request->all());
+
+        if($product){
+          return response()->json([
+            'msg'=>'Done'
+          ]);
+        }
+      }
 
     /**
      * Remove the specified resource from storage.
@@ -78,8 +92,16 @@ class ProductController extends Controller
      * @param  \App\Models\Product  $product
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Product $product)
-    {
-        //
-    }
+    function destroy(Product $product){
+
+        $delete = $product->delete();
+
+        if($delete){
+          return response()->json([
+            'msg'=>'Done'
+          ]);
+        }
+      }
+
+    
 }
