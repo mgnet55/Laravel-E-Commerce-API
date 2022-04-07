@@ -27,7 +27,7 @@ class CategoryController extends Controller
      */
     public function store(CategoryRequest $request)
     {
-        $input = Category::create($request->all());
+        $input = Category::create($request->validated());
 
         if($input)
         {

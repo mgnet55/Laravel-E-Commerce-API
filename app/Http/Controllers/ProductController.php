@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Product;
 use App\Http\Requests\ProductRequest;
 
+
 class ProductController extends Controller
 {
     /**
@@ -36,7 +37,7 @@ class ProductController extends Controller
      */
     function store(ProductRequest $request)
     {
-      $input = Product::create($request->all());
+      $input = Product::create($request->validated());
       if($input){
         return response()->json([
           'msg'=>'Done',
