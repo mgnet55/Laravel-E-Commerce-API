@@ -15,4 +15,9 @@ class City extends Model
        'governorate_id',
     ];
 
+    public function governorate(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    {
+        return $this->belongsTo(Governorate::class);
+    }
+
 }
