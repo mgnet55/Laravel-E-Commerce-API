@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Category;
-use Illuminate\Http\Request;
 use App\Http\Requests\CategoryRequest;
+use App\Models\Category;
+use Illuminate\Http\Response;
+use Illuminate\Support\Facades\File;
 
 class CategoryController extends Controller
 {
@@ -17,6 +18,11 @@ class CategoryController extends Controller
     {
         $categories = Category::all();
         return $categories;
+     * @return Response
+     */
+    public function index()
+    {
+        return Category::all();
     }
 
     /**
@@ -36,17 +42,32 @@ class CategoryController extends Controller
                 'data'=> $input
             ]);
         }
+     * @param CategoryRequest $request
+     * @return Response
+     */
+    public function store(CategoryRequest $request)
+    {
+        $imageName = 'cat_' . time() . '.' . $request->image->extension();
+        $request->image->move(public_path('categories'), $imageName);
+        return Category::firstOrCreate([...$request->except('image'), 'image' => $imageName]);
     }
 
     /**
      * Display the specified resource.
      *
+
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
     public function show(Category $category)
     {
         return $category;
+     * @param int $id
+     * @return Response
+     */
+    public function show(Category $category)
+    {
+        return $category->load('products')->get();
     }
 
     /**
@@ -56,18 +77,16 @@ class CategoryController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(CategoryRequest $request, $id)
-    {
-        $category = Category::find($id);
-        $category->update($request->all());
 
-        if($category){
-          return response()->json([
-            'msg'=>'Done',
-            'new category'=> $category
-          ]);
+    public function update(CategoryRequest $request, Category $category)
+    {
+
+        if ($request->hasFile('image')) {
+            $oldImageName = $category->image;
+            $imageName = substr($oldImageName, 0, strrpos($oldImageName, ".")) . '.' . $request->image->extension();
+            $request->image->move(public_path('categories'), $imageName);
         }
-        // return $category;
+        return $category->updateOrFail($request);
     }
 
     /**
@@ -87,8 +106,19 @@ class CategoryController extends Controller
           }
     }
 
-    public function getCatProducts(Category $category){
-                 return $category->products;
-    }
 
+     * @param int $id
+     * @return Response
+     */
+    public function destroy(Category $category)
+    {
+        $imageName = $category->image;
+        if ($category->deleteOrFail()) {
+            if (File::exists(public_path('categories/' . $imageName))) {
+                File::delete(public_path('categories/' . $imageName));
+            }
+            return true;
+        }
+        return false;
+    }
 }

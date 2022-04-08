@@ -8,14 +8,17 @@ use Illuminate\Database\Eloquent\Model;
 class Category extends Model
 {
     use HasFactory;
+
     public $timestamps = false;
+
     protected $fillable = [
         'name',
         'image',
         'description',
     ];
 
-    function products(){
+    public function products(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
         return $this->hasMany(Product::class);
     }
 
