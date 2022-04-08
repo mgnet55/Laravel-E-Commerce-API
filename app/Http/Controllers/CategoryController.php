@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\File;
 
 class CategoryController extends Controller
 {
-    
+
     /**
      * Display a listing of the resource.
      *
@@ -75,7 +75,7 @@ class CategoryController extends Controller
             $imageName = substr($oldImageName, 0, strrpos($oldImageName, ".")) . '.' . $request->image->extension();
             $request->image->move(public_path('categories'), $imageName);
         }
-        return $category->updateOrFail($request);
+       return $category->updateOrFail($request);
     }
 
     /**
