@@ -28,15 +28,8 @@ class ProductController extends ApiResponse
 
       $products = Product::latest()->paginate(5);
 
-        return $products;
-
-        if($products)
-        {
-            return $this->handleResponse($products, 'Done!');
-        } else {
-            return $this->handleError('Unauthorised.', ['error' => 'Unauthorised']);
-        }
-
+        return $this->handleResponse($products);
+        
       }
 
     /**
@@ -64,7 +57,7 @@ class ProductController extends ApiResponse
 
         return $this->handleResponse($input, 'Product added successfully!');
     } else {
-        return $this->handleError('Unauthorised.', ['error' => 'Unauthorised']);
+        return $this->handleError('Failed.', ['product not added'],402);
     }
 }
 
