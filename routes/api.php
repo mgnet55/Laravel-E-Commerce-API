@@ -27,11 +27,6 @@ use App\Http\Controllers\categoryController;
 // Products resource
 Route::apiResource("/products",ProductController::class);
 
-
-// Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-//     return $request->user();
-// });
-
 //location-models
 Route::apiResource('category',CategoryController::class);
 Route::apiResource('governorate',GovernorateController::class);
@@ -41,4 +36,4 @@ Route::apiResource('city',CityController::class);
 Route::post('login', [AuthController::class, 'login']);
 Route::post('register', [AuthController::class, 'register']);
 
-// Route::get('test',fn()=>'done')->middleware('auth:sanctum');
+Route::get('test',fn()=>'done')->middleware('auth:sanctum');
