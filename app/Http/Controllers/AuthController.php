@@ -16,8 +16,9 @@ class AuthController extends ApiResponse
     {
         if (Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
             $auth = Auth::user();
-            $success['token'] = $auth->createToken('LaravelSanctumAuth')->plainTextToken;
+            $success['token'] = $auth->createToken('api_token')->plainTextToken;
             $success['name'] = $auth->name;
+            $success['role'] = $auth->getRoleNames();
 
             return $this->handleResponse($success, 'User logged-in!');
         } else {
