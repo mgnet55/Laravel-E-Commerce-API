@@ -35,9 +35,10 @@ class CityController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show(City $city)
+    public function show($id)
     {
-        return $city->with('governorate');
+        return City::with('governorate')->find($id);
+        //return $city->with('governorate')->get();
     }
 
     /**

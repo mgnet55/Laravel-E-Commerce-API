@@ -40,7 +40,7 @@ class CategoryController extends Controller
      */
     public function show(Category $category)
     {
-        return $category->products;
+        return $category->load('products')->get();
     }
 
     /**
