@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\File;
 
 class CategoryController extends Controller
 {
+
     /**
      * Display a listing of the resource.
      *
@@ -18,33 +19,27 @@ class CategoryController extends Controller
     {
         $categories = Category::all();
         return $categories;
-     * @return Response
-     */
-    public function index()
-    {
-        return Category::all();
     }
-
     /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
-     */
-    public function store(CategoryRequest $request)
-    {
-        $input = Category::create($request->validated());
+//    public function store(CategoryRequest $request)
+//     {
+//         $input = Category::create($request->validated());
 
-        if($input)
-        {
-            return response()->json([
-                'msg'=> 'Done',
-                'data'=> $input
-            ]);
-        }
-     * @param CategoryRequest $request
-     * @return Response
-     */
+//         if($input)
+//         {
+//             return response()->json([
+//                 'msg'=> 'Done',
+//                 'data'=> $input
+//             ]);
+//         }
+//      * @param CategoryRequest $request
+//      * @return Response
+//      */
+
     public function store(CategoryRequest $request)
     {
         $imageName = 'cat_' . time() . '.' . $request->image->extension();
@@ -55,16 +50,10 @@ class CategoryController extends Controller
     /**
      * Display the specified resource.
      *
-
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show(Category $category)
-    {
-        return $category;
-     * @param int $id
-     * @return Response
-     */
+
     public function show(Category $category)
     {
         return $category->load('products')->get();
@@ -86,7 +75,7 @@ class CategoryController extends Controller
             $imageName = substr($oldImageName, 0, strrpos($oldImageName, ".")) . '.' . $request->image->extension();
             $request->image->move(public_path('categories'), $imageName);
         }
-        return $category->updateOrFail($request);
+       return $category->updateOrFail($request);
     }
 
     /**
@@ -95,21 +84,7 @@ class CategoryController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Category $category)
-    {
-          $delete = $category->delete();
-          if($delete)
-          {
-            return response()->json([
-                'msg'=>'Done'
-              ]);
-          }
-    }
 
-
-     * @param int $id
-     * @return Response
-     */
     public function destroy(Category $category)
     {
         $imageName = $category->image;
