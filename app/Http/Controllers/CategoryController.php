@@ -12,6 +12,12 @@ class CategoryController extends Controller
     /**
      * Display a listing of the resource.
      *
+     * @return \Illuminate\Http\Response
+     */
+    public function index()
+    {
+        $categories = Category::all();
+        return $categories;
      * @return Response
      */
     public function index()
@@ -22,6 +28,20 @@ class CategoryController extends Controller
     /**
      * Store a newly created resource in storage.
      *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function store(CategoryRequest $request)
+    {
+        $input = Category::create($request->validated());
+
+        if($input)
+        {
+            return response()->json([
+                'msg'=> 'Done',
+                'data'=> $input
+            ]);
+        }
      * @param CategoryRequest $request
      * @return Response
      */
@@ -35,6 +55,13 @@ class CategoryController extends Controller
     /**
      * Display the specified resource.
      *
+
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function show(Category $category)
+    {
+        return $category;
      * @param int $id
      * @return Response
      */
@@ -46,11 +73,11 @@ class CategoryController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param CategoryRequest $request
-     * @param Category $category
-     * @return Response
-     * @throws \Throwable
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
      */
+
     public function update(CategoryRequest $request, Category $category)
     {
 
@@ -65,6 +92,21 @@ class CategoryController extends Controller
     /**
      * Remove the specified resource from storage.
      *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy(Category $category)
+    {
+          $delete = $category->delete();
+          if($delete)
+          {
+            return response()->json([
+                'msg'=>'Done'
+              ]);
+          }
+    }
+
+
      * @param int $id
      * @return Response
      */

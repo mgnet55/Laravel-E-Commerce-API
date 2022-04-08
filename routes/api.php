@@ -6,6 +6,8 @@ use App\Http\Controllers\GovernorateController;
 use App\Http\Controllers\AuthController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ProductController;
+use App\Http\Controllers\categoryController;
 
 /*
 |--------------------------------------------------------------------------
@@ -17,6 +19,16 @@ use Illuminate\Support\Facades\Route;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
+
+// Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
+//     return $request->user();
+// });
+
+// Products resource
+Route::apiResource("/products",ProductController::class);
+
+// Categories resource
+Route::apiResource("/categories",CategoryController::class);
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
