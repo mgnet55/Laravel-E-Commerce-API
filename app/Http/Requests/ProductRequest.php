@@ -34,7 +34,7 @@ class ProductRequest extends FormRequest
         ];
         if($this->method() == 'POST')
         {
-           $rules['image'] = 'required|image|mime:png,jpg,jpeg';
+           $rules['image'] = 'required|image|mimes:png,jpg,jpeg';
         }
 
         return $rules;
