@@ -20,25 +20,12 @@ class CategoryController extends Controller
         $categories = Category::all();
         return $categories;
     }
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-//    public function store(CategoryRequest $request)
-//     {
-//         $input = Category::create($request->validated());
-
-//         if($input)
-//         {
-//             return response()->json([
-//                 'msg'=> 'Done',
-//                 'data'=> $input
-//             ]);
-//         }
-//      * @param CategoryRequest $request
-//      * @return Response
-//      */
+     /**
+      * Store a newly created resource in storage.
+      *
+      * @param CategoryRequest $request
+      * @return Response
+      */
 
     public function store(CategoryRequest $request)
     {
