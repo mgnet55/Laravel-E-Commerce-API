@@ -30,6 +30,8 @@ class ProductController extends ApiResponse
 
         return $this->handleResponse($products);
 
+        
+
       }
 
     /**
