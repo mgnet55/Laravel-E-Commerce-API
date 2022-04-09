@@ -27,5 +27,7 @@ Route::get('cart/{product}/add', [\App\Http\Controllers\CartController::class, '
       ->middleware('auth:sanctum');
 Route::get('cart/{product}/remove', [\App\Http\Controllers\CartController::class, 'removeItem'])
       ->middleware('auth:sanctum');
-Route::post('cart/charge', [\App\Http\Controllers\CartController::class, 'charge'])
+Route::post('cart/info', [\App\Http\Controllers\CartController::class, 'info'])
+    ->middleware('auth:sanctum');
+Route::post('checkout', [\App\Http\Controllers\CheckoutController::class, 'charge'])
     ->middleware('auth:sanctum');

@@ -75,14 +75,19 @@ class CartController extends Controller
         $request->validate([
             'city_id'=>'required|exists:cities,id',
             'street' =>'required|string',
-            'shipping_company_id'=>'required|exists:shipping_companies,id',
             'notes'=>'string'
         ]);
-        $cart=auth()->user()->cart;
-        $cart->city_id=$request['city_id'];
-        $cart->street=$request['street'];
-        $cart->shipping_company_id=$request['shipping_company_id'];
-        $cart->notes=$request['notes'];
-        $cart->save();
+        try {
+            $cart=auth()->user()->cart;
+            $cart->city_id=$request['city_id'];
+            $cart->street=$request['street'];
+            $cart->shipping_company_id=1;
+            $cart->notes=$request['notes'];
+            $cart->save();
+            return 'success';
+        }catch (\Exception $e)
+        {
+            return 'filed';
+        }
     }
 }

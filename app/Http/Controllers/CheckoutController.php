@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Order;
 use Cartalyst\Stripe\Laravel\Facades\Stripe;
 use Illuminate\Http\Request;
 use mysql_xdevapi\Exception;
@@ -39,7 +40,22 @@ class CheckoutController extends Controller
 
         if($charge['id'])
         {
+            try {
+                $order=new Order();
+                $order->payment_ref=$charge['id'];
+                $order->city_id=$cart->city_id;
+                $order->street=$cart->street;
+                $order->shipping_company_id=$cart->shipping_company_id;
+                $order->user_id=$cart->user_id;
+                $order->notes=$cart->notes;
+                if($order->save())
+                {
+                    
+                }
+            }catch (\Exception $e)
+            {
 
+            }
             return 'sucess';
         }
         return 'faild';
