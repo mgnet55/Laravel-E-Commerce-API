@@ -8,8 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
-
-class AuthController extends ApiResponse
+class AuthController extends Controller
 {
 
     public function login(Request $request)
@@ -48,4 +47,8 @@ class AuthController extends ApiResponse
         return $this->handleResponse($success, 'User successfully registered!');
     }
 
+            return response($success, 200);
+        } else {
+            return response(['error' => 'Unauthorised'],401);
+        }
 }
