@@ -15,4 +15,14 @@ class City extends Model
        'governorate_id',
     ];
 
+    protected $hidden=[
+        'deleted_at',
+        'governorate_id'
+    ];
+
+    public function governorate(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    {
+        return $this->belongsTo(Governorate::class);
+    }
+
 }

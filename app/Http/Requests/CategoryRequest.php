@@ -13,7 +13,7 @@ class CategoryRequest extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -29,7 +29,7 @@ class CategoryRequest extends FormRequest
         ];
 
         if ($this->method() == 'POST') {
-            $rules['image'] = 'image|mime:png,jpg,jpeg';
+            $rules['image'] = 'image|mimes:png,jpg,jpeg';
         }
         return $rules;
 

@@ -13,7 +13,7 @@ class ProductRequest extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -28,13 +28,13 @@ class ProductRequest extends FormRequest
             'name'=>'required|string',
             'description'=>'required|string',
             'quantity'=>'required|numeric',
-            'price'=>'required|float',
+            'price'=>'required|regex:/^\d{1,13}(\.\d{1,4})?$/',
             'user_id'=>'required|numeric|exists:users,id',
             'category_id'=>'required|numeric|exists:categories,id'
         ];
         if($this->method() == 'POST')
         {
-           $rules['image'] = 'required|image|mime:png,jpg,jpeg';
+           $rules['image'] = 'required|image|mimes:png,jpg,jpeg';
         }
 
         return $rules;
