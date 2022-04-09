@@ -8,7 +8,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\CategoryController;
-
+use App\Http\Controllers\ShippingcompanyController;
+use App\Models\ShippingCompany;
+use App\Http\Controllers\OrderController;
 
 /*
 |--------------------------------------------------------------------------
@@ -33,6 +35,14 @@ Route::apiResource("/products",ProductController::class);
 Route::apiResource('category',CategoryController::class);
 Route::apiResource('governorate',GovernorateController::class);
 Route::apiResource('city',CityController::class);
+
+// Shipping
+Route::get('shippingOrders/{id}',[ShippingcompanyController::class,'getOrders']);
+
+// order
+Route::get('orderItems/{id}',[OrderController::class,'getOrderDetails']);
+
+
 
 //permissions
 Route::post('login', [AuthController::class, 'login']);
