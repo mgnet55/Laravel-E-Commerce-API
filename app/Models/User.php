@@ -2,12 +2,11 @@
 
 namespace App\Models;
 
-use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable
 {
@@ -25,12 +24,32 @@ class User extends Authenticatable
         'avatar',
         'address',
         'city_id',
-        'phone'
-
+        'phone',
+        'active',
+        'bank_id'
     ];
-    public function cart()
+
+
+    public function customer()
     {
-        return $this->hasOne(Cart::class);
+        if (auth()->user()->hasRole('customer'))
+        return $this->belongsTo(Customer::class,'id');
+    }
+
+    public function admin()
+    {
+
+        return $this->belongsTo(Admin::class, 'id');
+    }
+
+    public function seller()
+    {
+        return $this->belongsTo(Seller::class, 'id');
+    }
+
+    public function ShippingCompany()
+    {
+        return $this->hasOne(ShippingCompany::class, 'id');
     }
 
     /**
