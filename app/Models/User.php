@@ -22,6 +22,11 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'avatar',
+        'address',
+        'city_id',
+        'phone'
+
     ];
     public function cart()
     {
