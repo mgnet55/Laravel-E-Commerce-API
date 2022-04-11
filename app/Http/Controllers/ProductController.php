@@ -28,7 +28,9 @@ class ProductController extends ApiResponse
 
       $products = Product::latest()->paginate(5);
 
-        return $this->handleResponse($products);
+        return $this->handleResponse($products,'All Products');
+
+
 
       }
 

@@ -21,10 +21,15 @@ class Order extends Model
 
     public function shipping_companies()
     {
-//        return $this->belongsTo(Shipping_Company::class)
+        // return $this->belongsTo(Shipping_Company::class);
     }
     public function customer()
     {
 //        return $this->belongsTo(User::class,'user_id');
     }
+
+    public function orderItems(){
+          return $this->hasMany(OrderItems::class);
+    }
+
 }
