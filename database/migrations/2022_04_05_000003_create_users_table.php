@@ -19,10 +19,15 @@ return new class extends Migration
             $table->string('name');
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
+            $table->string('avatar');
+            $table->string('phone');
+            $table->string('address');
+            $table->foreignId('city_id')->nullable()->constrained()->cascadeOnUpdate()->onDelete('set null');
             $table->string('password');
             $table->rememberToken();
             $table->timestamps();
             $table->string('bank_id')->nullable();
+            $table->boolean('active')->default(true);
         });
     }
 

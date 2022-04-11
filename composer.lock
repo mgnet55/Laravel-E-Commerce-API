@@ -1669,9 +1669,7 @@
                     "type": "tidelift"
                 }
             ],
-
-
-            "time": "2022-04-06T18:17:37+00:00"
+				"time": "2022-04-06T18:17:37+00:00"
         },
         {
             "name": "league/mime-type-detection",
