@@ -43,6 +43,7 @@ class AuthController extends ApiResponse
         }
 
         $input = $request->all();
+        //$input = $request->except('avatar');
         $input['password'] = bcrypt($input['password']);
         $user = User::create($input);
         $success['token'] = $user->createToken('LaravelSanctumAuth')->plainTextToken;
