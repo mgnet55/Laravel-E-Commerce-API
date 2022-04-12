@@ -32,7 +32,7 @@ class AuthController extends ApiResponse
             'email' => 'required|email',
             'password' => 'required',
             'confirm_password' => 'required|same:password',
-            'avatar' => 'image|mimes:png,jpg,jpeg',
+            // 'avatar' => 'image|mimes:png,jpg,jpeg',
             'address' => 'required|string',
             'city_id'=>'required|exists:cities,id',
             'phone'=>'required|numeric'
