@@ -13,6 +13,15 @@ class Product extends Model
         'name', 'description','quantity','price','image','user_id','category_id','available'
     ];
 
+    protected $casts=[
+      'available'=>'boolean'
+
+    ];
+
+    protected $hidden=[
+        'created_at', 'updated_at','category_id','available'
+    ];
+
 
     function seller(){
         return $this->belongsTo(User::class);

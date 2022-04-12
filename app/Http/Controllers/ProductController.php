@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\API\ApiResponse;
 use App\Http\Requests\ProductRequest;
 use App\Models\Product;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\File;
 
 
@@ -21,7 +23,7 @@ class ProductController extends ApiResponse
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
 
     function index()
@@ -32,7 +34,7 @@ class ProductController extends ApiResponse
             $products = Product::where('name', 'LIKE', "%{$name}%")->where('available','>',0)->orderBy('id', 'desc')->with('category:id,name')->paginate(30);
         }
         else {
-            $products = Product::latest()->where('available','>',0)->with('category:id,name')->paginate(30);
+            $products = Product::latest()->where('available','=',true)->with('category:id,name')->paginate(30);
 
         }
         return $this->handleResponse($products, 'products');
@@ -41,7 +43,7 @@ class ProductController extends ApiResponse
     function productsByCategory($category_id)
     {
 
-        $products = Product::where('category_id', '=', $category_id)->orderBy('id', 'desc')->with('category:id,name')->paginate(30);
+        $products = Product::where('available','=',true)->where('category_id', '=', $category_id)->orderBy('id', 'desc')->with('category:id,name')->paginate(30);
 
         return $this->handleResponse($products, 'products');
 
@@ -52,7 +54,7 @@ class ProductController extends ApiResponse
      * Store a newly created resource in storage.
      *
      * @param \Illuminate\Http\Request $request
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     function store(ProductRequest $request)
     {
@@ -70,8 +72,8 @@ class ProductController extends ApiResponse
     /**
      * Display the specified resource.
      *
-     * @param \App\Models\Product $product
-     * @return \Illuminate\Http\Response
+     * @param Product $product
+     * @return JsonResponse
      */
     public function show(Product $product)
     {
@@ -87,8 +89,8 @@ class ProductController extends ApiResponse
      * Update the specified resource in storage.
      *
      * @param \Illuminate\Http\Request $request
-     * @param \App\Models\Product $product
-     * @return \Illuminate\Http\Response
+     * @param Product $product
+     * @return Response
      */
 
 
@@ -112,8 +114,8 @@ class ProductController extends ApiResponse
     /**
      * Remove the specified resource from storage.
      *
-     * @param \App\Models\Product $product
-     * @return \Illuminate\Http\Response
+     * @param Product $product
+     * @return Response
      */
 
     function destroy(Product $product)
