@@ -44,6 +44,27 @@ return [
             'throw' => false,
         ],
 
+        'profiles' => [
+            'driver' => 'local',
+            'root' => storage_path('app/public/profiles'),
+            'url' => env('APP_URL').'/storage',
+            'visibility' => 'public',
+            'throw' => false,
+        ],
+        'products' => [
+            'driver' => 'local',
+            'root' => storage_path('app/public/products'),
+            'url' => env('APP_URL').'/storage',
+            'visibility' => 'public',
+            'throw' => false,
+        ],
+        'categories' => [
+            'driver' => 'local',
+            'root' => storage_path('app/public/categories'),
+            'url' => env('APP_URL').'/storage',
+            'visibility' => 'public',
+            'throw' => false,
+        ],
         's3' => [
             'driver' => 's3',
             'key' => env('AWS_ACCESS_KEY_ID'),
@@ -70,7 +91,11 @@ return [
     */
 
     'links' => [
-        public_path('storage') => storage_path('app/public'),
+        //ublic_path('storage') => storage_path('app/public'),
+        public_path('profiles') => storage_path('app/public/profiles'),
+        public_path('categories') => storage_path('app/public/categories'),
+        public_path('products') => storage_path('app/public/products'),
+
     ],
 
 ];

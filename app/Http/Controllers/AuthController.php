@@ -3,15 +3,16 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\API\ApiResponse;
+use App\Http\Requests\LoginRequest;
+use App\Http\Requests\RegisterRequest;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Validator;
 
 class AuthController extends ApiResponse
 {
 
-    public function login(Request $request)
+    public function login(LoginRequest $request)
     {
         if (Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
             $auth = Auth::user();
@@ -21,35 +22,35 @@ class AuthController extends ApiResponse
 
             return $this->handleResponse($success, 'User logged-in!');
         } else {
-            return $this->handleError('Unauthorised.', ['error' => 'Unauthorised']);
+            return $this->handleError('invalid credentials.', ['error' => 'invalid credentials'], 401);
         }
     }
 
-    public function register(Request $request)
+    public function register(RegisterRequest $request)
     {
-        $validator = Validator::make($request->all(), [
-            'name' => 'required',
-            'email' => 'required|email',
-            'password' => 'required',
-            'confirm_password' => 'required|same:password',
-            // 'avatar' => 'image|mimes:png,jpg,jpeg',
-            'address' => 'required|string',
-            'city_id'=>'required|exists:cities,id',
-            'phone'=>'required|numeric'
-        ]);
 
-        if ($validator->fails()) {
-            return $this->handleError($validator->errors());
-        }
-
-        $input = $request->all();
-        //$input = $request->except('avatar');
+        $input = $request->except('avatar');
+        $input['avatar'] = $this->imageUploader($request, 'avatar', 'profiles');
         $input['password'] = bcrypt($input['password']);
         $user = User::create($input);
-        $success['token'] = $user->createToken('LaravelSanctumAuth')->plainTextToken;
-        $success['name'] = $user->name;
+        return $user;
+        $data = [
+            'token' => $user->createToken('LaravelSanctumAuth')->plainTextToken,
+            'name' => $user->name,
+            'avatar' => $input['avatar']
+        ];
+        return $this->handleResponse($data, 'User successfully registered!');
+    }
 
-        return $this->handleResponse($success, 'User successfully registered!');
+    public function imageUploader(Request $request, string $fileInputName, string $driver = 'public', string $fileName = null): ?string
+    {
+        if ($request->hasFile($fileInputName)) {
+            $fileName = $fileName ?? $fileInputName . '_' . time();
+            $fileName .= '.' . $request->file($fileInputName)->extension();
+            $request->file($fileInputName)->storeAs('', name: $fileName, options: $driver);
+            return $fileName;
+        }
+        return null;
     }
 
 }
