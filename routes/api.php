@@ -29,7 +29,7 @@ use App\Http\Controllers\ShippingcompanyController;
 //     return $request->user();
 // });
 
-// Products resource
+// Products
 Route::apiResource("/products",ProductController::class);
 
 //location-models
