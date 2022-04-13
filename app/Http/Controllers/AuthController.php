@@ -25,31 +25,30 @@ class AuthController extends ApiResponse
         }
     }
 
-    public function register(Request $request)
+    public function register(RegisterRequest $request)
     {
-        $validator = Validator::make($request->all(), [
-            'name' => 'required',
-            'email' => 'required|email|unique:users',
-            'password' => 'required',
-            'confirm_password' => 'required|same:password',
-            // 'avatar' => 'image|mimes:png,jpg,jpeg',
-            'address' => 'required|string',
-            'city_id'=>'required|exists:cities,id',
-            'phone'=>'required|numeric'
-        ]);
 
-        if ($validator->fails()) {
-            return $this->handleError($validator->errors());
-        }
-
-        $input = $request->all();
-        //$input = $request->except('avatar');
+        $input = $request->except('avatar');
+        $input['avatar'] = $this->imageUploader($request, 'avatar', 'profiles');
         $input['password'] = bcrypt($input['password']);
         $user = User::create($input);
-        $success['token'] = $user->createToken('LaravelSanctumAuth')->plainTextToken;
-        $success['name'] = $user->name;
-
-        return $this->handleResponse($success, 'User successfully registered!');
+        return $user;
+        $data = [
+            'token' => $user->createToken('LaravelSanctumAuth')->plainTextToken,
+            'name' => $user->name,
+            'avatar' => $input['avatar']
+        ];
+        return $this->handleResponse($data, 'User successfully registered!');
     }
 
+    public function imageUploader(Request $request, string $fileInputName, string $driver = 'public', string $fileName = null): ?string
+    {
+        if ($request->hasFile($fileInputName)) {
+            $fileName = $fileName ?? $fileInputName . '_' . time();
+            $fileName .= '.' . $request->file($fileInputName)->extension();
+            $request->file($fileInputName)->storeAs('', name: $fileName, options: $driver);
+            return $fileName;
+        }
+        return null;
+    }
 }
