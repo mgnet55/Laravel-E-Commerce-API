@@ -40,7 +40,7 @@ Route::apiResource('city',CityController::class);
 // Shipping
 Route::get('shippingOrders/{id}',[ShippingcompanyController::class,'getOrders']);
 
-// Profile
+//---- Profile
 Route::get('myProfile',[UserController::class,'getProfile'])
     ->middleware('auth:sanctum');
 
