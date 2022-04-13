@@ -54,12 +54,19 @@ Route::post('login', [AuthController::class, 'login']);
 
 Route::get('cart', [\App\Http\Controllers\CartController::class, 'index'])
     ->middleware('auth:sanctum');
-Route::get('cart/{product}/add', [\App\Http\Controllers\CartController::class, 'addItem'])
-      ->middleware('auth:sanctum');
-Route::get('cart/{product}/remove', [\App\Http\Controllers\CartController::class, 'removeItem'])
-      ->middleware('auth:sanctum');
-Route::post('cart/info', [\App\Http\Controllers\CartController::class, 'info'])
+Route::put('cart', [\App\Http\Controllers\CartController::class, 'update'])
+    ->middleware('auth:sanctum');
+Route::post('cart/info', [\App\Http\Controllers\CartController::class, 'setCartInfo'])
+    ->middleware('auth:sanctum');
+Route::post('cart/{product}', [\App\Http\Controllers\CartController::class, 'addItem'])
+    ->middleware('auth:sanctum');
+Route::delete('cart/{product}', [\App\Http\Controllers\CartController::class, 'removeItem'])
+    ->middleware('auth:sanctum');
+Route::get('cart/info', [\App\Http\Controllers\CartController::class, 'getCartInfo'])
     ->middleware('auth:sanctum');
 Route::post('checkout', [\App\Http\Controllers\CheckoutController::class, 'charge'])
     ->middleware('auth:sanctum');
+Route::get('cart/items', [\App\Http\Controllers\CartController::class, 'getItemsNumber'])
+    ->middleware('auth:sanctum');
+
 
