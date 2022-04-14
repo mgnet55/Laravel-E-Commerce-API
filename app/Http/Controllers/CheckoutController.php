@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Order;
-use App\Models\OrderItem;
+use App\Models\OrderItems;
 use App\Models\Product;
 use Cartalyst\Stripe\Laravel\Facades\Stripe;
 use Illuminate\Http\Request;
@@ -17,21 +17,14 @@ class CheckoutController extends Controller
     {
         $request->validate(['email'=>'required|email']);
         $token=$request->all();
-        $cart=auth()->user()->cart;
+        $user= auth()->user();
+        $cart=$user->customer->cart;
         $items=$cart->items()->with('product')->get();
         $totalPrice=0;
-
         foreach ($items as $item)
         {
             $totalPrice+=$item->quantity*$item->product->price;
         }
-//        $token = Stripe::tokens()->create([
-//            'card' => ['number'    => '4242424242424242',
-//                'exp_month' => 6,
-//                'exp_year'  => 2024,
-//                'cvc'       => 314,
-//            ],
-//        ]);
         try {
             $charge= Stripe::charges()->create([
                 'currency' =>'USD',
@@ -55,7 +48,7 @@ class CheckoutController extends Controller
                 $order->notes=$cart->notes;
                 if($order->save()) {
                     foreach ($items as $item) {
-                        $orderItem = new OrderItem();
+                        $orderItem = new OrderItems();
                         $orderItem->name = $item->product->name;
                         $orderItem->description = $item->product->description;
                         $orderItem->quantity = $item->quantity;

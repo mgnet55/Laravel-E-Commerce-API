@@ -14,18 +14,16 @@ class CartController extends Controller
 {
     public function index()
     {
-        $cart=  auth()->user()->cart->first();
-
+        $user= auth()->user();
+        $cart=$user->customer->cart->first();
         if($cart)
         {
             $items=$cart->items()->with('product')->get();
             $totalPrice=0;
-
             foreach ($items as $item)
             {
                 $totalPrice+=$item->quantity*$item->product->price;
             }
-
             return response(['cart'=>$cart->items()->with('product')->get(),
                 'totalPrice'=>$totalPrice]);
         }
@@ -44,7 +42,8 @@ class CartController extends Controller
         {
             return response(['messeage'=>'this quantity not availble ']);
         }
-        $cart= auth()->user()->cart;
+        $user= auth()->user();
+        $cart=$user->customer->cart;
         if(!empty($cart->items))
         {
             foreach ($cart->items as $item)
@@ -75,7 +74,8 @@ class CartController extends Controller
     }
     public function removeItem(Product $product)
     {
-        $cart=auth()->user()->cart;
+        $user= auth()->user();
+        $cart=$user->customer->cart;
         foreach ($cart->items as $item)
         {
             if ($item->product_id==$product->id)
@@ -94,7 +94,8 @@ class CartController extends Controller
         ]);
 
         try {
-            $cart=auth()->user()->cart;
+            $user= auth()->user();
+            $cart=$user->customer->cart;
             $cart->city_id=$request['city_id'];
             $cart->street=$request['street'];
             $cart->shipping_company_id=1;
@@ -108,12 +109,14 @@ class CartController extends Controller
     }
     public function getCartInfo()
     {
-        return auth()->user()->cart;
+         $user= auth()->user();
+        return $user->customer->cart;;
     }
     public function update(Request $request)
     {
         $products=$request->all();
-        $cart=  auth()->user()->cart;
+        $user= auth()->user();
+        $cart=$user->customer->cart;
         $items=$cart->items()->get();
         foreach ($products as $product)
         {
@@ -123,15 +126,14 @@ class CartController extends Controller
                 {
                     $item->quantity=$product['quantity'];
                     $item->save();
-
                 }
             }
         }
-
     }
     public function getItemsNumber()
     {
-        $cart=$cart=  auth()->user()->cart;
+        $user= auth()->user();
+        $cart=$user->customer->cart;
         $totalQuantity=DB::table('cart_products')
             ->where('cart_id','=',$cart->id)
             ->sum('quantity');
