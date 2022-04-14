@@ -6,7 +6,9 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Requests\RegisterRequest;
 use App\Http\Controllers\API\ApiResponse;
+use App\Http\Requests\ProfileUpdateRequest;
 
 class UserController extends ApiResponse
 {
@@ -49,9 +51,9 @@ class UserController extends ApiResponse
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(RegisterRequest $request)
     {
-        //
+
     }
 
     /**
@@ -66,6 +68,30 @@ class UserController extends ApiResponse
     }
 
     public function getProfile(){
-       return $this->handleResponse(auth()->user()->with('city')->get(), 'profile!');
+
+
+        $user = User::find(Auth::id());
+        $user->city;
+
+        return $this->handleResponse($user, 'Done!');
+
+    }
+
+    public function updateProfile(ProfileUpdateRequest $request)
+    {
+
+        $user = Auth::user();
+
+        $user->name = $request['name'];
+        $user->email = $request['email'];
+        $user->phone = $request['phone'];
+        $user->address = $request['address'];
+        $user->city_id = $request['city_id'];
+
+        if($user->save()){
+          return handleResponse($user,'Successfully Updated');
+        }else{
+          return handleError('failed','failed to update profile');
+        }
     }
 }
