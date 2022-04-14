@@ -44,6 +44,11 @@ Route::get('shippingOrders/{id}',[ShippingcompanyController::class,'getOrders'])
 Route::get('myProfile',[UserController::class,'getProfile'])
     ->middleware('auth:sanctum');
 
+
+// edit Profile
+Route::post('editprofile',[UserController::class,'updateProfile'])
+    ->middleware('auth:sanctum');
+
 // order
 Route::get('orderItems/{id}',[OrderController::class,'getOrderDetails']);
 

@@ -26,6 +26,7 @@ class ProfileUpdateRequest extends FormRequest
         return [
 
             'name' => 'alpha_dash',
+            'email' => 'email',
             'password' => 'confirmed',
             'avatar' => 'image|mimes:png,jpg,jpeg',
             'address' => 'string',

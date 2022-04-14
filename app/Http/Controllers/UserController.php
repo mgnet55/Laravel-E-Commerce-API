@@ -6,7 +6,9 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Requests\RegisterRequest;
 use App\Http\Controllers\API\ApiResponse;
+use App\Http\Requests\ProfileUpdateRequest;
 
 class UserController extends ApiResponse
 {
@@ -49,9 +51,9 @@ class UserController extends ApiResponse
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(RegisterRequest $request)
     {
-        //
+
     }
 
     /**
@@ -67,19 +69,40 @@ class UserController extends ApiResponse
 
     public function getProfile(){
 
-        $userID = Auth::user()->id;
-        $profileData = User::findOrFail($userID);
+        $user = User::find(Auth::id());
+        $user->city;
 
-        if ($profileData) {
+        return $this->handleResponse($user, 'Done!');
 
-            return $this->handleResponse($profileData, 'Done!');
 
-        } else {
 
-            return $this->handleError('Unauthorised.', ['error' => 'Unauthorised']);
+        // if ($user) {
+        //     return $this->handleResponse($user->city, 'Done!');
+        // } else {
+
+        //     return $this->handleError('Unauthorised.', ['error' => 'Unauthorised']);
+        // }
+
+    }
+
+    public function updateProfile(ProfileUpdateRequest $request)
+    {
+
+        $user = Auth::user();
+
+        $user->name = $request['name'];
+        $user->email = $request['email'];
+        $user->phone = $request['phone'];
+        $user->address = $request['address'];
+        $user->city_id = $request['city_id'];
+
+        $user->save();
+
+        if($user){
+          return response()->json([
+            'msg'=>'Done',
+            'user'=>$user
+          ]);
         }
-
-
-
     }
 }

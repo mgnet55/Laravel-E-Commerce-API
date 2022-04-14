@@ -52,6 +52,10 @@ class User extends Authenticatable
         return $this->hasOne(ShippingCompany::class, 'id');
     }
 
+    public function city(){
+        return $this->belongsTo(City::class)->with('governorate');
+    }
+
     /**
      * The attributes that should be hidden for serialization.
      *
