@@ -32,7 +32,7 @@ class User extends Authenticatable
 
     public function customer()
     {
-        if (auth()->user()->hasRole('customer'))
+        //if (auth()->user()->hasRole('customer'))
         return $this->belongsTo(Customer::class,'id');
     }
 
@@ -53,7 +53,9 @@ class User extends Authenticatable
     }
 
     public function city(){
+
         return $this->belongsTo(City::class)->with('governorate');
+
     }
 
     /**

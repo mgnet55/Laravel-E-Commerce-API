@@ -13,11 +13,15 @@ use Illuminate\Support\Facades\Storage;
 | contains the "web" middleware group. Now create something great!
 |
 */
-Route::get('profiles/{file}', function($file) {
-    if (Storage::disk('profiles')->exists($file)) {return response()->file('profiles/'.$file);}
-    else return response(status:404);
-
-})->middleware('auth:sanctum');
+Route::group(['middleware'=>'auth:sanctum'],function (){
+    Route::get('profiles/{file}', function($file) {
+        if (Storage::disk('profiles')->exists($file)) {return response()->file('profiles/'.$file);}
+        else return response(status:404);});
+});
+//Route::get('profiles/{file}', function($file) {
+//    if (Storage::disk('profiles')->exists($file)) {return response()->file('profiles/'.$file);}
+//    else return response(status:404);
+//})->middleware('auth:sanctum');
 
 //Route::get('/', function () {
 //    return view('welcome');

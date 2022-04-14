@@ -33,7 +33,6 @@ class AuthController extends ApiResponse
         $input['avatar'] = $this->imageUploader($request, 'avatar', 'profiles');
         $input['password'] = bcrypt($input['password']);
         $user = User::create($input);
-        return $user;
         $data = [
             'token' => $user->createToken('LaravelSanctumAuth')->plainTextToken,
             'name' => $user->name,

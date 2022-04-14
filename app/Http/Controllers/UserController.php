@@ -69,19 +69,11 @@ class UserController extends ApiResponse
 
     public function getProfile(){
 
+
         $user = User::find(Auth::id());
         $user->city;
 
         return $this->handleResponse($user, 'Done!');
-
-
-
-        // if ($user) {
-        //     return $this->handleResponse($user->city, 'Done!');
-        // } else {
-
-        //     return $this->handleError('Unauthorised.', ['error' => 'Unauthorised']);
-        // }
 
     }
 
@@ -96,13 +88,10 @@ class UserController extends ApiResponse
         $user->address = $request['address'];
         $user->city_id = $request['city_id'];
 
-        $user->save();
-
-        if($user){
-          return response()->json([
-            'msg'=>'Done',
-            'user'=>$user
-          ]);
+        if($user->save()){
+          return handleResponse($user,'Successfully Updated');
+        }else{
+          return handleError('failed','failed to update profile');
         }
     }
 }
