@@ -9,18 +9,18 @@ class OrderItems extends Model
 {
     use HasFactory;
 
-    protected $fillable=
-           [
-               'name',
-               'description',
-               'discount',
-               'user_id',
-               'image',
-               'price',
-               'quantity',
-               'fulfilled',
-               'order_id'
-           ];
+//    protected $fillable=
+//           [
+//               'name',
+//               'description',
+//               'discount',
+//               'user_id',
+//               'image',
+//               'price',
+//               'quantity',
+//               'fulfilled',
+//               'order_id'
+//           ];
 
     public function order()
     {
