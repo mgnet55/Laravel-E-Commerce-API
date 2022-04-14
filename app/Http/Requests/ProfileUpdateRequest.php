@@ -33,4 +33,17 @@ class ProfileUpdateRequest extends FormRequest
             'phone' => 'numeric'
         ];
     }
+
+    /**
+     * Get the error messages for the defined validation rules.
+     *
+     * @return array
+     */
+    public function messages()
+    {
+        return [
+            'city_id.required' => 'The city field is required',
+            'city_id.exists:cities,id' => 'The city doesn\'t exists',
+        ];
+    }
 }

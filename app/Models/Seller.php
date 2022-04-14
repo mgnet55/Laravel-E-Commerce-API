@@ -11,4 +11,14 @@ class Seller extends Model
     protected $table = 'users';
     use HasFactory;
 
+    public function products(){
+        return $this->hasMany(Product::class);
+    }
+
+    public function orderItems(){
+        return $this->hasMany(OrderItems::class);
+    }
+
+
+
 }

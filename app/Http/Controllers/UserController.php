@@ -66,20 +66,6 @@ class UserController extends ApiResponse
     }
 
     public function getProfile(){
-
-        $userID = Auth::user()->id;
-        $profileData = User::findOrFail($userID);
-
-        if ($profileData) {
-
-            return $this->handleResponse($profileData, 'Done!');
-
-        } else {
-
-            return $this->handleError('Unauthorised.', ['error' => 'Unauthorised']);
-        }
-
-
-
+       return $this->handleResponse(auth()->user()->with('city')->get(), 'profile!');
     }
 }

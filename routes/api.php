@@ -31,7 +31,7 @@ use App\Http\Controllers\ShippingcompanyController;
 
 // Products resource
 Route::apiResource("/products",ProductController::class);
-
+Route::get('products/category/{id}',[ProductController::class,'productsByCategory']);
 //location-models
 Route::apiResource('category',CategoryController::class);
 Route::apiResource('governorate',GovernorateController::class);
@@ -46,8 +46,6 @@ Route::get('myProfile',[UserController::class,'getProfile'])
 
 // order
 Route::get('orderItems/{id}',[OrderController::class,'getOrderDetails']);
-
-
 
 //permissions
 Route::post('login', [AuthController::class, 'login']);
