@@ -18,14 +18,14 @@ class ApiResponse extends Controller
         return response()->json($res, 200);
     }
 
-    public function handleError($error, $errorMsg = [], $code = 404): \Illuminate\Http\JsonResponse
+    public function handleError($error, $errorMsg = [], $code = 400): \Illuminate\Http\JsonResponse
     {
         $res = [
             'success' => false,
-            'message' => $error,
+            'errors' => $error,
         ];
         if(!empty($errorMsg)){
-            $res['data'] = $errorMsg;
+            $res['message'] = $errorMsg;
         }
         return response()->json($res, $code);
     }

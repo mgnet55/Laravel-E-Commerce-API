@@ -1,16 +1,17 @@
 <?php
 
 
-use App\Http\Controllers\CityController;
-use App\Http\Controllers\GovernorateController;
-use App\Http\Controllers\AuthController;
 use Illuminate\Http\Request;
+use App\Models\ShippingCompany;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\CityController;
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\GovernorateController;
 use App\Http\Controllers\ShippingcompanyController;
-use App\Models\ShippingCompany;
-use App\Http\Controllers\OrderController;
 
 /*
 |--------------------------------------------------------------------------
@@ -30,7 +31,7 @@ use App\Http\Controllers\OrderController;
 
 // Products resource
 Route::apiResource("/products",ProductController::class);
-
+Route::get('products/category/{id}',[ProductController::class,'productsByCategory']);
 //location-models
 Route::apiResource('category',CategoryController::class);
 Route::apiResource('governorate',GovernorateController::class);
@@ -39,10 +40,12 @@ Route::apiResource('city',CityController::class);
 // Shipping
 Route::get('shippingOrders/{id}',[ShippingcompanyController::class,'getOrders']);
 
+// Profile
+Route::get('myProfile',[UserController::class,'getProfile'])
+    ->middleware('auth:sanctum');
+
 // order
 Route::get('orderItems/{id}',[OrderController::class,'getOrderDetails']);
-
-
 
 //permissions
 Route::post('login', [AuthController::class, 'login']);
@@ -50,8 +53,7 @@ Route::post('register', [AuthController::class, 'register']);
 
 Route::get('test',fn()=>'done')->middleware('auth:sanctum');
 
-Route::post('login', [AuthController::class, 'login']);
-
+// Cart,Checkout
 Route::get('cart', [\App\Http\Controllers\CartController::class, 'index'])
     ->middleware('auth:sanctum');
 Route::put('cart', [\App\Http\Controllers\CartController::class, 'update'])
