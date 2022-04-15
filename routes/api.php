@@ -1,20 +1,17 @@
 <?php
 
 
-use App\Http\Controllers\CartController;
-use App\Http\Controllers\CheckoutController;
-use App\Http\Controllers\SellerController;
-use Illuminate\Http\Request;
-use App\Models\ShippingCompany;
-use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\CartController;
+use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\CityController;
-use App\Http\Controllers\UserController;
+use App\Http\Controllers\GovernorateController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProductController;
-use App\Http\Controllers\CategoryController;
-use App\Http\Controllers\GovernorateController;
-use App\Http\Controllers\ShippingCompanyController;
+use App\Http\Controllers\SellerController;
+use App\Http\Controllers\UserController;
+use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
@@ -33,27 +30,27 @@ use App\Http\Controllers\ShippingCompanyController;
 // });
 
 // Products resource
-Route::apiResource("/products",ProductController::class);
-Route::get('products/category/{id}',[ProductController::class,'productsByCategory']);
+Route::apiResource("/products", ProductController::class);
+Route::get('products/category/{id}', [ProductController::class, 'productsByCategory']);
 //location-models
-Route::apiResource('category',CategoryController::class);
-Route::apiResource('governorate',GovernorateController::class);
-Route::apiResource('city',CityController::class);
+Route::apiResource('category', CategoryController::class);
+Route::apiResource('governorate', GovernorateController::class);
+Route::apiResource('city', CityController::class);
 
 // Shipping
 //Route::get('shippingOrders/{id}',[ShippingCompanyController::class,'getOrders']);
 
 // Profile
-Route::get('myProfile',[UserController::class,'getProfile'])
+Route::get('myProfile', [UserController::class, 'getProfile'])
     ->middleware('auth:sanctum');
 
 
 // edit Profile
-Route::post('editprofile',[UserController::class,'updateProfile'])
+Route::post('editprofile', [UserController::class, 'updateProfile'])
     ->middleware('auth:sanctum');
 
 // order
-Route::get('orderItems/{id}',[OrderController::class,'getOrderDetails']);
+Route::get('orderItems/{id}', [OrderController::class, 'getOrderDetails']);
 
 //permissions
 Route::post('login', [AuthController::class, 'login']);
@@ -61,7 +58,7 @@ Route::post('register', [AuthController::class, 'register']);
 
 
 // Cart,Checkout
-Route::group(['prefix'=>'cart','middleware'=>'auth:sanctum'],function(){
+Route::group(['prefix' => 'cart', 'middleware' => 'auth:sanctum'], function () {
     Route::get('/', [CartController::class, 'index']);
     Route::put('/', [CartController::class, 'update']);
     Route::post('info', [CartController::class, 'setCartInfo']);
@@ -70,8 +67,27 @@ Route::group(['prefix'=>'cart','middleware'=>'auth:sanctum'],function(){
     Route::get('info', [CartController::class, 'getCartInfo']);
     Route::get('items', [CartController::class, 'getItemsNumber']);
 });
-    Route::post('checkout', [CheckoutController::class, 'charge'])->middleware('auth:sanctum');
+Route::post('checkout', [CheckoutController::class, 'charge'])->middleware('auth:sanctum');
 
 
-Route::get('test',[SellerController::class,'products'])->middleware('auth:sanctum');
+Route::get('test', [SellerController::class, 'products'])->middleware('auth:sanctum');
 
+//Seller Routes
+Route::group(['prefix' => 'seller'], function () {
+    Route::group(['prefix' => 'products'], function () {
+        Route::get('{product}', [SellerController::class, 'products']);
+        Route::post('/', [SellerController::class, 'createProduct']);
+        Route::delete('{product}', [SellerController::class, 'deleteProduct']);
+        Route::put('{product}', [SellerController::class, 'updateProduct']);
+        Route::patch('{product}', [SellerController::class, 'updateProduct']);
+    });
+    Route::group(['prefix' => 'orders'], function () {
+        Route::get('pending', [SellerController::class, 'pendingOrders']);
+        Route::get('picked', [SellerController::class, 'pickedOrders']);
+        Route::get('/', [SellerController::class, 'orderItems']);
+    });
+    Route::group(['prefix' => 'payments'], function () {
+        Route::get('fulfilled', [SellerController::class, 'fulfilled']);
+        Route::get('unfulfilled', [SellerController::class, 'unfulfilled']);
+    });
+});
