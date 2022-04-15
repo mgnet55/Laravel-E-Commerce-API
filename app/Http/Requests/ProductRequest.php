@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Auth;
 
 class ProductRequest extends FormRequest
 {
@@ -13,7 +14,8 @@ class ProductRequest extends FormRequest
      */
     public function authorize()
     {
-        return true;
+        return Auth::user()->hasRole('seller') || Auth::user()->hasRole('admin');
+
     }
 
     /**
@@ -29,7 +31,7 @@ class ProductRequest extends FormRequest
             'description'=>'required|string',
             'quantity'=>'required|numeric',
             'price'=>'required|regex:/^\d{1,13}(\.\d{1,4})?$/',
-            'user_id'=>'required|numeric|exists:users,id',
+            'user_id'=>'numeric|exists:users,id',
             'category_id'=>'required|numeric|exists:categories,id'
         ];
         if($this->method() == 'POST')
@@ -39,5 +41,18 @@ class ProductRequest extends FormRequest
 
         return $rules;
 
+    }
+
+    /**
+     * Get the error messages for the defined validation rules.
+     *
+     * @return array
+     */
+    public function messages()
+    {
+        return [
+            'category_id.required' => 'The category field is required',
+            'category_id.exists:categories,id' => 'The selected category doesn\'t exists',
+        ];
     }
 }

@@ -11,7 +11,7 @@ use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\GovernorateController;
-use App\Http\Controllers\ShippingcompanyController;
+use App\Http\Controllers\ShippingCompanyController;
 
 /*
 |--------------------------------------------------------------------------
@@ -38,7 +38,7 @@ Route::apiResource('governorate',GovernorateController::class);
 Route::apiResource('city',CityController::class);
 
 // Shipping
-Route::get('shippingOrders/{id}',[ShippingcompanyController::class,'getOrders']);
+Route::get('shippingOrders/{id}',[ShippingCompanyController::class,'getOrders']);
 
 // Profile
 Route::get('myProfile',[UserController::class,'getProfile'])

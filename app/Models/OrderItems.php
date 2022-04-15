@@ -22,8 +22,16 @@ class OrderItems extends Model
 //               'order_id'
 //           ];
 
+    protected $hidden=[
+        'fulfilled'
+        ];
+
     public function order()
     {
         return $this->belongsTo(Order::class);
+    }
+
+    public function seller(){
+        return $this->belongsTo(User::class,'user_id');
     }
 }
