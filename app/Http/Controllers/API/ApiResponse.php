@@ -8,7 +8,7 @@ use App\Http\Controllers\Controller as Controller;
 class ApiResponse extends Controller
 {
 
-    public function handleResponse($result, $msg): \Illuminate\Http\JsonResponse
+    public function handleResponse($result, $msg=''): \Illuminate\Http\JsonResponse
     {
         $res = [
             'success' => true,

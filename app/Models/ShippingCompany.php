@@ -17,18 +17,65 @@ class ShippingCompany extends Model
         'address_street'
     ];
 
-    public function city(): \Illuminate\Database\Eloquent\Relations\BelongsTo
-    {
-        return $this->belongsTo(City::class)->with(Governorate::class);
-    }
+    protected $hidden = [
+        'user_id'
+    ];
 
     public function manager(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(User::class)->with(User::class);
     }
 
+    public function city(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    {
+        return $this->belongsTo(City::class)->with(Governorate::class);
+    }
+
     public function orders(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
-        return $this->hasMany(Order::class);
+        return $this->hasMany(Order::class)->with(OrderItems::class);
     }
+
+    public function onWayOrders(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(Order::class)
+            ->where('status', '=', 'on Way')
+            ->orderBy('id', 'desc')->withSum('orderItems','quantity*price')
+            ;//->with(orderItems::class);
+    }
+
+    public function deliveredOrders(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(Order::class)
+            ->where('status', '=', 'Done')
+            ->orderBy('id', 'desc')
+            ->with(orderItems::class);
+    }
+
+    public function processingOrders(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(Order::class)
+            ->where('status', '=', 'Processing')
+            ->with(orderItems::class, fn($query) => $query->with('user:id,name,address,phone'));
+
+    }
+
+    //products waiting to be picked up
+    public function waitingPickup()
+    {
+        return $this->hasManyThrough(OrderItems::class, Order::class)
+            ->where('picked', '=', false)
+            ->with('seller');
+    }
+
+    //products picked up waiting to be delivered to customer
+    public function pickedItems(): \Illuminate\Database\Eloquent\Relations\HasManyThrough
+    {
+        return $this->hasManyThrough(OrderItems::class, Order::class)
+            ->where('picked', '=', true)
+            ->with(User::class)
+            ->orderBy('id', 'desc');
+    }
+
+
 }

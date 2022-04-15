@@ -14,7 +14,8 @@ class AuthController extends ApiResponse
 
     public function login(LoginRequest $request)
     {
-        if (Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
+
+        if (Auth::attempt(['email' => $request->email, 'password' => $request->password],!!$request['remember_token'])) {
             $auth = Auth::user();
             $success['token'] = $auth->createToken('api_token')->plainTextToken;
             $success['name'] = $auth->name;
@@ -39,6 +40,19 @@ class AuthController extends ApiResponse
             'avatar' => $input['avatar']
         ];
         return $this->handleResponse($data, 'User successfully registered!');
+    }
+
+    public function logout()
+    {
+        Auth::logout();
+        return $this->handleResponse('', 'successfully logged out');
+    }
+
+    public function logoutAllDevices()
+    {
+
+        auth()->user()->tokens()->delete();
+        return $this->handleResponse('', 'successfully logged out from all devices');
     }
 
     public function imageUploader(Request $request, string $fileInputName, string $driver = 'public', string $fileName = null): ?string

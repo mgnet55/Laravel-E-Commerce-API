@@ -22,8 +22,23 @@ class OrderItems extends Model
 //               'order_id'
 //           ];
 
+    protected $hidden=[
+        'fulfilled',
+        'updated_at',
+        'user_id',
+        'order_id'
+        ];
+
+    protected $casts=[
+        'created_at'=>'datetime'
+    ];
+
     public function order()
     {
         return $this->belongsTo(Order::class);
+    }
+
+    public function seller(){
+        return $this->belongsTo(User::class,'user_id');
     }
 }
