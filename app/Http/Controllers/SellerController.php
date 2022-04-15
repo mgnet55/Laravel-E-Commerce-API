@@ -8,6 +8,7 @@ use App\Http\Controllers\API\ApiResponse;
 use App\Http\Requests\ProductRequest;
 use App\Models\Product;
 use App\Models\Seller;
+use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 
 class SellerController extends ApiResponse
@@ -19,48 +20,50 @@ class SellerController extends ApiResponse
 //        }
 //    }
 //
-    protected Seller $seller;
+    //protected Seller $seller=new Seller();
     protected ProductController $productController;
 
     public function __construct()
     {
-        $this->seller = Auth::user()->seller;
-        $this->productController = new ProductController;
+        //return Auth()->user();
+        //Auth::user()->seller =new Seller;
+        // User::where('id','=',Auth::id())->get()->seller;
+        //$this->productController = new ProductController;
     }
 
-    public function authorize($ability, $arguments = [])
+    public function authorize($ability, $arguments = []): \Illuminate\Auth\Access\Response
     {
         return auth()->user()->hasRole('seller');
     }
 
-    public function allOrders()
+    public function allOrders(): \Illuminate\Http\JsonResponse
     {
-        return $this->handleResponse($this->seller->orderItems()->paginate(30),);
+        return $this->handleResponse(Auth::user()->seller->orderItems()->paginate(30),);
     }
 
-    public function perndingOrders()
+    public function pendingOrders(): \Illuminate\Http\JsonResponse
     {
-        return $this->handleResponse($this->seller->pendingOrders()->paginate(30));
+        return $this->handleResponse(Auth::user()->seller->pendingOrders()->paginate(30));
     }
 
-    public function sentOrders()
+    public function sentOrders(): \Illuminate\Http\JsonResponse
     {
-        return $this->handleResponse($this->seller->sentOrders()->paginate(30));
+        return $this->handleResponse(Auth::user()->seller->pickedOrders()->paginate(30));
     }
 
-    public function fulfilled()
+    public function fulfilled(): \Illuminate\Http\JsonResponse
     {
-        return $this->handleResponse($this->seller->fulfilled()->paginate(30));
+        return $this->handleResponse(Auth::user()->seller->fulfilled()->paginate(30));
     }
 
-    public function unfulfilled()
+    public function unfulfilled(): \Illuminate\Http\JsonResponse
     {
-        return $this->handleResponse($this->seller->unfulfilled()->paginate(30));
+        return $this->handleResponse(Auth::user()->seller->unfulfilled()->paginate(30));
     }
 
-    public function products()
+    public function products(): \Illuminate\Http\JsonResponse
     {
-        return $this->handleResponse($this->seller->products()->paginate(30));
+        return $this->handleResponse(Auth::user()->seller->products()->paginate(30));
     }
 
     /**
@@ -76,7 +79,7 @@ class SellerController extends ApiResponse
     public function updateProduct(ProductRequest $request, Product $product)
     {
         if ($seller->id == $product->user_id) {
-            $this->productController->updateOrFail($request, $product);
+            $product->updateOrFail($request->all());
         } else abort(403);
     }
 

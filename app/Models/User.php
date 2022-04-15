@@ -49,7 +49,7 @@ class User extends Authenticatable
 
     public function ShippingCompany()
     {
-        return $this->hasOne(ShippingCompany::class, 'id');
+        return $this->hasOne(ShippingCompany::class, 'user_id','id');
     }
 
     public function city(){

@@ -23,8 +23,15 @@ class OrderItems extends Model
 //           ];
 
     protected $hidden=[
-        'fulfilled'
+        'fulfilled',
+        'updated_at',
+        'user_id',
+        'order_id'
         ];
+
+    protected $casts=[
+        'created_at'=>'datetime'
+    ];
 
     public function order()
     {

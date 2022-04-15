@@ -2,23 +2,25 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\API\ApiResponse;
 use App\Models\ShippingCompany;
 use Illuminate\Support\Facades\Auth;
 
-class ShippingCompanyController extends Controller
+class ShippingCompanyController extends ApiResponse
 {
+
+    protected ShippingCompany $shippingCompany;
+
+    public function __construct()
+    {
+        $this->shippingCompany = Auth::user()->ShippingCompany;
+    }
+
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    protected ShippingCompany $shippingCompany;
-
-    public function __construct()
-    {
-        $this->seller = Auth::user()->seller;
-    }
-
     public function index()
     {
         $companies = ShippingCompany::all();
