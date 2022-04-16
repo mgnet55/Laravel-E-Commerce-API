@@ -7,6 +7,7 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\API\ApiResponse;
 use App\Http\Requests\ProductRequest;
 use App\Models\Product;
+use App\Models\Seller;
 use Illuminate\Support\Facades\Auth;
 
 class SellerController extends ApiResponse
@@ -18,7 +19,7 @@ class SellerController extends ApiResponse
 //        }
 //    }
 //
-    //protected Seller $seller=new Seller();
+    //protected Seller $seller;
     protected ProductController $productController;
 
     public function __construct()
@@ -29,10 +30,10 @@ class SellerController extends ApiResponse
         //$this->productController = new ProductController;
     }
 
-    public function authorize($ability, $arguments = []): \Illuminate\Auth\Access\Response
-    {
-        return auth()->user()->hasRole('seller');
-    }
+//    public function authorize($ability, $arguments = []): \Illuminate\Auth\Access\Response
+//    {
+//        return auth()->user()->hasRole('seller');
+//    }
 
     public function allOrders(): \Illuminate\Http\JsonResponse
     {
@@ -72,16 +73,16 @@ class SellerController extends ApiResponse
         $product = new Product($request->all());
         $product->user_id = Auth::id();
         if ($product->saveOrFail()) {
-            return $this->handleResponse('', 'Create Successfully');
+            return $this->handleResponse('Success', 'Product created Successfully');
         }
         return $this->handleError('failed', 'Failed to create product');
     }
 
     public function updateProduct(ProductRequest $request, Product $product)
     {
-        if ($seller->id == $product->user_id) {
+        if (Auth::id() == $product->user_id) {
             if ($product->updateOrFail($request->all())) {
-                return $this->handleResponse('', 'Updated Successfully');
+                return $this->handleResponse('Success', 'Product updated Successfully');
             } else {
                 return $this->handleError('failed', 'Failed to update product');
             }
@@ -91,15 +92,14 @@ class SellerController extends ApiResponse
 
     public function deleteProduct(Product $product)
     {
-        if ($seller->id == $product->user_id) {
+        if (Auth::id() == $product->user_id) {
             if ($product->deleteOrFail()) {
-                return $this->handleResponse('', 'Deleted Successfully');
+                return $this->handleResponse('Success', 'Product deleted Successfully');
             } else {
                 return $this->handleError('failed', 'Failed to delete product');
             }
         }
         return $this->handleError('unauthorized', 'Not your product', 403);
-
     }
 
 }

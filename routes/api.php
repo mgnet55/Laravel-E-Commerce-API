@@ -56,7 +56,6 @@ Route::get('orderItems/{id}', [OrderController::class, 'getOrderDetails']);
 Route::post('login', [AuthController::class, 'login']);
 Route::post('register', [AuthController::class, 'register']);
 
-
 // Cart,Checkout
 Route::group(['prefix' => 'cart', 'middleware' => 'auth:sanctum'], function () {
     Route::get('/', [CartController::class, 'index']);
@@ -69,13 +68,14 @@ Route::group(['prefix' => 'cart', 'middleware' => 'auth:sanctum'], function () {
 });
 Route::post('checkout', [CheckoutController::class, 'charge'])->middleware('auth:sanctum');
 
-
-Route::get('test', [SellerController::class, 'products'])->middleware('auth:sanctum');
+Route::get('test', function(){
+    auth()->user()->assignRole('seller');
+})->middleware('auth:sanctum');
 
 //Seller Routes
-Route::group(['prefix' => 'seller'], function () {
+Route::group(['prefix' => 'seller','middleware'=>'auth:sanctum'], function () {
     Route::group(['prefix' => 'products'], function () {
-        Route::get('{product}', [SellerController::class, 'products']);
+        Route::get('/', [SellerController::class, 'products']);
         Route::post('/', [SellerController::class, 'createProduct']);
         Route::delete('{product}', [SellerController::class, 'deleteProduct']);
         Route::put('{product}', [SellerController::class, 'updateProduct']);

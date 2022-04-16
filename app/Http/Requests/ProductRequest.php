@@ -14,7 +14,8 @@ class ProductRequest extends FormRequest
      */
     public function authorize()
     {
-        return Auth::user()->hasRole('seller') || Auth::user()->hasRole('admin');
+
+        return Auth::user()->hasAnyRole(['seller','admin']);
 
     }
 
