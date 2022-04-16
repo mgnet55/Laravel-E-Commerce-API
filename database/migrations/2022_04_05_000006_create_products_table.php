@@ -21,7 +21,7 @@ return new class extends Migration
             $table->integer('quantity');
             $table->float('price');
             $table->float('discount')->default(0);
-            $table->text('image');
+            $table->text('image')->nullable();
             $table->boolean('available')->default(false);
             $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('category_id')->default(1);

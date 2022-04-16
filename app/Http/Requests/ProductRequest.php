@@ -14,9 +14,7 @@ class ProductRequest extends FormRequest
      */
     public function authorize()
     {
-
         return Auth::user()->hasAnyRole(['seller','admin']);
-
     }
 
     /**
@@ -26,7 +24,6 @@ class ProductRequest extends FormRequest
      */
     public function rules()
     {
-
         $rules = [
             'name'=>'required|string',
             'description'=>'required|string',
@@ -35,13 +32,12 @@ class ProductRequest extends FormRequest
             'user_id'=>'numeric|exists:users,id',
             'category_id'=>'required|numeric|exists:categories,id'
         ];
-        if($this->method() == 'POST')
-        {
-           $rules['image'] = 'required|image|mimes:png,jpg,jpeg';
-        }
+         if($this->method() == 'POST')
+         {
+            $rules['image'] = 'image|mimes:png,jpg,jpeg';
+         }
 
         return $rules;
-
     }
 
     /**

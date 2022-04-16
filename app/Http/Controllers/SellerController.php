@@ -62,7 +62,7 @@ class SellerController extends ApiResponse
 
     public function products(): \Illuminate\Http\JsonResponse
     {
-        return $this->handleResponse(Auth::user()->seller->products()->paginate(30));
+        return $this->handleResponse(Auth::user()->seller->products()->with('category')->paginate(30));
     }
 
     /**
