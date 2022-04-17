@@ -17,7 +17,6 @@ class City extends Model
 
     protected $hidden=[
         'deleted_at',
-        'governorate_id'
 
     ];
     protected $appends=[

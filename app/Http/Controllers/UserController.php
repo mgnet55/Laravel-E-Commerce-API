@@ -71,8 +71,6 @@ class UserController extends ApiResponse
 
 
         $user = User::find(Auth::id());
-        $user->city;
-
         return $this->handleResponse($user, 'Done!');
 
     }
