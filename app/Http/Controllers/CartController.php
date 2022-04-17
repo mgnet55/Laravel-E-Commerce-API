@@ -5,12 +5,12 @@ namespace App\Http\Controllers;
 use App\Models\Cart;
 use App\Models\CartProduct;
 use App\Models\Product;
-
+use App\Http\Controllers\API\ApiResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 
-class CartController extends Controller
+class CartController extends ApiResponse
 {
     public function index()
     {
@@ -24,13 +24,17 @@ class CartController extends Controller
             {
                 $totalPrice+=$item->quantity*$item->product->price;
             }
-            return response(['cart'=>$cart->items()->with('product')->get(),
-                'totalPrice'=>$totalPrice]);
+            $totalQuantity=DB::table('cart_products')
+                ->where('cart_id','=',$cart->id)
+                ->sum('quantity');
+            return $this->handleResponse(['cart'=>$cart,'items'=>$cart->items()->with('product')->get(),
+                                         'totalPrice'=>$totalPrice,
+                                         'totalQuantity'=>$totalQuantity], 'cart');
         }
         $cart=new Cart();
         $cart->user_id=auth()->user()->id;
         $cart->save();
-        return $cart;
+        return $this->handleResponse(['cart'=>$cart],'cart');
     }
     public function addItem(Product $product,Request $request)
     {
@@ -40,7 +44,7 @@ class CartController extends Controller
         $quantity=$request->quantity;
         if($quantity>$product->quantity)
         {
-            return response(['messeage'=>'this quantity not availble ']);
+            return $this->handleError('Failed.', ['this quantity not available'], 402);
         }
         $user= auth()->user();
         $cart=$user->customer->cart;
@@ -52,7 +56,10 @@ class CartController extends Controller
                 {
                     $item->quantity=$quantity;
                     $item->save();
-                    return 'add success';
+                    $totalQuantity=DB::table('cart_products')
+                        ->where('cart_id','=',$cart->id)
+                        ->sum('quantity');
+                    return $this->handleResponse(['totalQuantity'=>$totalQuantity],'add successfully');
                 }
             }
             $item=new CartProduct();
@@ -60,7 +67,10 @@ class CartController extends Controller
             $item->product_id=$product->id;
             $item->quantity=$quantity;
             $item->save();
-            return 'add another one  ';
+            $totalQuantity=DB::table('cart_products')
+                ->where('cart_id','=',$cart->id)
+                ->sum('quantity');
+            return $this->handleResponse(['totalQuantity'=>$totalQuantity],'add successfully');
         }
         $cart=new Cart();
         $cart->user_id=auth()->user()->id;
@@ -70,7 +80,10 @@ class CartController extends Controller
         $item->product_id=$product->id;
         $item->quantity=1;
         $item->save();
-        return 'add another one  ';
+        $totalQuantity=DB::table('cart_products')
+            ->where('cart_id','=',$cart->id)
+            ->sum('quantity');
+        return $this->handleResponse(['totalQuantity'=>$totalQuantity],'add successfully');
     }
     public function removeItem(Product $product)
     {
@@ -78,10 +91,18 @@ class CartController extends Controller
         $cart=$user->customer->cart;
         foreach ($cart->items as $item)
         {
-            if ($item->product_id==$product->id)
-            {
+            if ($item->product_id==$product->id) {
                 $item->delete();
-//                return 'removed success';
+                $totalPrice = 0;
+                foreach ($cart->items as $item) {
+                    $totalPrice += $item->quantity * $item->product->price;
+                }
+                $totalQuantity = DB::table('cart_products')
+                    ->where('cart_id', '=', $cart->id)
+                    ->sum('quantity');
+                return $this->handleResponse(['cart' => $cart->items()->with('product')->get(),
+                    'totalPrice' => $totalPrice,
+                    'totalQuantity' => $totalQuantity], 'item removed successfully');
             }
         }
     }
@@ -101,7 +122,7 @@ class CartController extends Controller
             $cart->shipping_company_id=1;
             $cart->notes=$request['notes'];
             $cart->save();
-            return 'success';
+            return $this->handleResponse('success','data is ok');
         }catch (\Exception $e)
         {
             return $e->getMessage();
@@ -126,6 +147,17 @@ class CartController extends Controller
                 {
                     $item->quantity=$product['quantity'];
                     $item->save();
+                    $totalPrice=0;
+                    foreach ($items as $item)
+                    {
+                        $totalPrice+=$item->quantity*$item->product->price;
+                    }
+                    $totalQuantity=DB::table('cart_products')
+                        ->where('cart_id','=',$cart->id)
+                        ->sum('quantity');
+                    return $this->handleResponse(['cart'=>$cart->items()->with('product')->get(),
+                        'totalPrice'=>$totalPrice,
+                        'totalQuantity'=>$totalQuantity], 'quantity updated successfully ');
                 }
             }
         }
