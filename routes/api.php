@@ -70,7 +70,7 @@ Route::group(['prefix' => 'cart', 'middleware' => 'auth:sanctum'], function () {
 Route::post('checkout', [CheckoutController::class, 'charge'])->middleware('auth:sanctum');
 
 Route::get('test', function(){
-    return \App\Models\User::find(17);
+    return \App\Models\Order::find(1);
 });
 
 //Seller Routes

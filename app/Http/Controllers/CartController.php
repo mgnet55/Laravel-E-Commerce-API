@@ -100,9 +100,9 @@ class CartController extends ApiResponse
                 $totalQuantity = DB::table('cart_products')
                     ->where('cart_id', '=', $cart->id)
                     ->sum('quantity');
-                return $this->handleResponse(['cart' => $cart->items()->with('product')->get(),
-                    'totalPrice' => $totalPrice,
-                    'totalQuantity' => $totalQuantity], 'item removed successfully');
+                return $this->handleResponse(['cart'=>$cart,'items'=>$cart->items()->with('product')->get(),
+                    'totalPrice'=>$totalPrice,
+                    'totalQuantity'=>$totalQuantity], 'item removed successfully');
             }
         }
     }
@@ -155,7 +155,7 @@ class CartController extends ApiResponse
                     $totalQuantity=DB::table('cart_products')
                         ->where('cart_id','=',$cart->id)
                         ->sum('quantity');
-                    return $this->handleResponse(['cart'=>$cart->items()->with('product')->get(),
+                    return $this->handleResponse(['cart'=>$cart,'items'=>$cart->items()->with('product')->get(),
                         'totalPrice'=>$totalPrice,
                         'totalQuantity'=>$totalQuantity], 'quantity updated successfully ');
                 }
