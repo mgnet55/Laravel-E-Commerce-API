@@ -4,14 +4,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Classes\ImageManager;
 use App\Http\Controllers\API\ApiResponse;
 use App\Http\Requests\ProductRequest;
 use App\Models\Product;
-use App\Models\Seller;
 use Illuminate\Support\Facades\Auth;
 
 class SellerController extends ApiResponse
 {
+
 //    public function __call($method, array $args)
 //    {
 //        if (auth()->user()->hasRole('seller')) {
@@ -62,7 +63,7 @@ class SellerController extends ApiResponse
 
     public function products(): \Illuminate\Http\JsonResponse
     {
-        return $this->handleResponse(Auth::user()->seller->products()->paginate(30));
+        return $this->handleResponse(Auth::user()->seller->products()->with('category')->paginate(30));
     }
 
     /**
@@ -70,18 +71,24 @@ class SellerController extends ApiResponse
      */
     public function createProduct(ProductRequest $request)
     {
-        $product = new Product($request->all());
-        $product->user_id = Auth::id();
+
+        $product = Product::firstOrCreate([
+            'name' => $request->get('name'),
+            'user_id' => Auth::id()
+        ]);
+        $product['image'] = ImageManager::upload($request, 'image', 'products');
         if ($product->saveOrFail()) {
             return $this->handleResponse('Success', 'Product created Successfully');
         }
+        ImageManager::delete($product['image'], 'products');
         return $this->handleError('failed', 'Failed to create product');
     }
 
     public function updateProduct(ProductRequest $request, Product $product)
     {
         if (Auth::id() == $product->user_id) {
-            if ($product->updateOrFail($request->all())) {
+            if ($product->updateOrFail($request->except('image'))) {
+                ImageManager::update($request, 'image', $product->image, 'products');
                 return $this->handleResponse('Success', 'Product updated Successfully');
             } else {
                 return $this->handleError('failed', 'Failed to update product');
@@ -94,6 +101,7 @@ class SellerController extends ApiResponse
     {
         if (Auth::id() == $product->user_id) {
             if ($product->deleteOrFail()) {
+                ImageManager::delete($product->image, 'products');
                 return $this->handleResponse('Success', 'Product deleted Successfully');
             } else {
                 return $this->handleError('failed', 'Failed to delete product');

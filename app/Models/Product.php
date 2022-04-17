@@ -19,9 +19,8 @@ class Product extends Model
     ];
 
     protected $hidden=[
-        'created_at', 'updated_at','category_id','available'
+        'created_at', 'updated_at','category_id'
     ];
-
 
     function seller(){
         return $this->belongsTo(User::class);
@@ -30,7 +29,5 @@ class Product extends Model
     function category(){
         return $this->belongsTo(Category::class);
     }
-
-
 
 }

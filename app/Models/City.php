@@ -18,11 +18,29 @@ class City extends Model
     protected $hidden=[
         'deleted_at',
         'governorate_id'
+
+    ];
+    protected $appends=[
+        'governorate_name'
+    ];
+    protected $with=[
+
+    ];
+
+    protected $casts=[
+
     ];
 
     public function governorate(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(Governorate::class);
     }
+
+    public function getGovernorateNameAttribute(){
+        $gov= $this->governorate()->get('name');
+        return $gov[0]->name;
+    }
+
+
 
 }

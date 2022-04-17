@@ -26,16 +26,26 @@ class OrderItems extends Model
         'fulfilled',
         'updated_at',
         'user_id',
-        'order_id'
+        'order_id',
+        'created_at',
+        'updated_at',
+
         ];
 
     protected $casts=[
         'created_at'=>'datetime'
     ];
 
+    protected $appends = ['total'];
+
+
     public function order()
     {
         return $this->belongsTo(Order::class);
+    }
+
+    public function getTotalAttribute(){
+        return ($this->quantity*$this->price*(1-$this->discount));
     }
 
     public function seller(){
