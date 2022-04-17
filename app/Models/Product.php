@@ -19,7 +19,7 @@ class Product extends Model
     ];
 
     protected $hidden=[
-        'created_at', 'updated_at','category_id','available'
+        'created_at', 'updated_at','category_id'
     ];
 
     function seller(){

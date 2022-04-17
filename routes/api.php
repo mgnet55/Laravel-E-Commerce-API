@@ -6,6 +6,7 @@ use App\Http\Controllers\CartController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\CityController;
+use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\GovernorateController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProductController;
@@ -91,3 +92,7 @@ Route::group(['prefix' => 'seller','middleware'=>'auth:sanctum'], function () {
         Route::get('unfulfilled', [SellerController::class, 'unfulfilled']);
     });
 });
+
+
+Route::get('customer/orders',[CustomerController::class,'getOrders'])->middleware('auth:sanctum');
+Route::get('customer/orders/{order}',[CustomerController::class,'orderDetails'])->middleware('auth:sanctum');
