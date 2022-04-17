@@ -49,7 +49,6 @@ class ProductController extends ApiResponse
 
     }
 
-
     /**
      * Store a newly created resource in storage.
      *

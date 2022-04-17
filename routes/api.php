@@ -69,8 +69,8 @@ Route::group(['prefix' => 'cart', 'middleware' => 'auth:sanctum'], function () {
 Route::post('checkout', [CheckoutController::class, 'charge'])->middleware('auth:sanctum');
 
 Route::get('test', function(){
-    auth()->user()->assignRole('seller');
-})->middleware('auth:sanctum');
+    return \App\Models\User::find(17);
+});
 
 //Seller Routes
 Route::group(['prefix' => 'seller','middleware'=>'auth:sanctum'], function () {

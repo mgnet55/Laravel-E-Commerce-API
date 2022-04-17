@@ -22,7 +22,6 @@ class Product extends Model
         'created_at', 'updated_at','category_id','available'
     ];
 
-
     function seller(){
         return $this->belongsTo(User::class);
     }
@@ -30,7 +29,5 @@ class Product extends Model
     function category(){
         return $this->belongsTo(Category::class);
     }
-
-
 
 }

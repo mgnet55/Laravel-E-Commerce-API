@@ -1,14 +1,14 @@
 <?php
 
-namespace App\Traits;
+namespace App\Classes;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
-trait imageManager
+class ImageManager
 {
 
-    public function upload(Request &$request, string $formInputName, string $driver = 'public', string $fileName = null): ?string
+    public static function upload(Request &$request, string $formInputName, string $driver = 'public', string $fileName = null): ?string
     {
         if ($request->hasFile($formInputName)) {
             $fileName = $fileName ?? $formInputName . '_' . time();
@@ -20,17 +20,18 @@ trait imageManager
         return null;
     }
 
-    public function update(Request &$request, string $formInputName, string $currentName, string $driver = 'public'): ?string
+    public static function update(Request &$request, string $formInputName, string $currentName, string $driver = 'public'): bool
     {
         if ($request->hasFile($formInputName)) {
             $request->file($formInputName)->storeAs('', name: $currentName, options: $driver);
             $request->offsetUnset($formInputName);
+            return true;
         }
-        return true;
+        return false;
     }
 
 
-    public function delete(string $imageName, string $driver = 'public')
+    public static function delete(string $imageName, string $driver = 'public'): bool
     {
         return Storage::disk($driver)->delete($imageName);
     }
