@@ -48,9 +48,12 @@ class User extends Authenticatable
     ];
 
     protected $appends = [
-        'location',
+        //'location',
     ];
 
+    protected $with=[
+        'city'
+    ];
 
 
     /**
@@ -97,16 +100,18 @@ class User extends Authenticatable
     }
 
 
-    public function getLocationAttribute()
-    {
-        return
-         [
-             'city'=>$this->city()->first()->name,
-             'governorate'=>$this->city()->first()->governorate_name,
-             'address'=>$this->address
-         ];
-
-    }
+//    public function getLocationAttribute()
+//    {
+//        return
+//         [
+//             'city_id'=>$this->city->id,
+//             'city_name'=>$this->city()->first()->name,
+//             'governorate_id'=>$this->city()->first()->governerate_id,
+//             'governorate_name'=>$this->city()->first()->governorate_name,
+//             'address'=>$this->address
+//         ];
+//
+//    }
 
 //    public function getGovernorateNameAttribute()
 //    {
