@@ -35,7 +35,6 @@ class CheckoutController extends Controller
         {
             return $e->getMessage();
         }
-
         if($charge['id'])
         {
             try {

@@ -31,8 +31,7 @@ class AuthController extends ApiResponse
 
     public function register(RegisterRequest $request)
     {
-
-//        $input = $request->except('avatar');
+        $input = $request->all();
         $input['avatar'] = ImageManager::upload($request, 'avatar', 'profiles');
         $input['password'] = bcrypt($input['password']);
         $user = User::create($input);

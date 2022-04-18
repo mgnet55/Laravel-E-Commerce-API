@@ -42,7 +42,7 @@ class CartController extends ApiResponse
             ['quantity'=>'required|numeric']
         );
         $quantity=$request->quantity;
-        if($quantity>$product->quantity)
+        if($quantity>$product->quantity||$quantity<1||$quantity=='')
         {
             return $this->handleError('Failed.', ['this quantity not available'], 402);
         }
@@ -122,7 +122,7 @@ class CartController extends ApiResponse
             $cart->shipping_company_id=1;
             $cart->notes=$request['notes'];
             $cart->save();
-            return $this->handleResponse('success','data is ok');
+            return $this->handleResponse($cart,'data is ok');
         }catch (\Exception $e)
         {
             return $e->getMessage();
@@ -145,6 +145,10 @@ class CartController extends ApiResponse
             {
                 if($product['id']==$item->id)
                 {
+                    if(($product['quantity']>$item->product->quantity||$product['quantity']<1)||$product['quantity']=='')
+                    {
+                        return $this->handleError('Failed.', ['this quantity not available'], 402);
+                    }
                     $item->quantity=$product['quantity'];
                     $item->save();
                     $totalPrice=0;
