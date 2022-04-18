@@ -37,7 +37,7 @@ class GovernorateController extends Controller
      */
     public function show(Governorate $governorate)
     {
-        return $governorate->cities()->get(['id','name']);
+        return $governorate->cities()->get();
     }
 
     /**
