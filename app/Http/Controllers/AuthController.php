@@ -31,7 +31,7 @@ class AuthController extends ApiResponse
     {
 
         $input = $request->all();
-        $input['avatar'] = ImageManager::upload($request, 'avatar', 'profiles');
+        $input['avatar'] = ImageManager::generateName($request, 'avatar', 'profile');
         $input['password'] = bcrypt($input['password']);
         $user = User::create($input);
         $data = [
@@ -39,6 +39,7 @@ class AuthController extends ApiResponse
             'name' => $user->name,
             'avatar' => $input['avatar']
         ];
+        ImageManager::upload($request, 'avatar', 'profiles',$input['avatar']);
         return $this->handleResponse($data, 'User successfully registered!');
     }
 
@@ -53,6 +54,11 @@ class AuthController extends ApiResponse
 
         auth()->user()->tokens()->delete();
         return $this->handleResponse('', 'successfully logged out from all devices');
+    }
+
+    public function roles(){
+        return $this->handleResponse(['role' => Auth::user()->getRoleNames()], '');
+
     }
 
 }

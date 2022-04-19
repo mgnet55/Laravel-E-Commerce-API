@@ -56,8 +56,11 @@ Route::get('orderItems/{id}', [OrderController::class, 'getOrderDetails']);
 //permissions
 Route::post('login', [AuthController::class, 'login']);
 Route::post('register', [AuthController::class, 'register']);
-Route::get('logout/all', [AuthController::class, 'logoutAllDevices']);
-Route::get('logout', [AuthController::class, 'logout']);
+Route::group(['middleware'=>'auth:sanctum'],function(){
+    Route::get('logout/all', [AuthController::class, 'logoutAllDevices']);
+    Route::get('logout', [AuthController::class, 'logout']);
+    Route::get('role', [AuthController::class, 'role']);
+});
 
 // Cart,Checkout
 Route::group(['prefix' => 'cart', 'middleware' => 'auth:sanctum'], function () {
