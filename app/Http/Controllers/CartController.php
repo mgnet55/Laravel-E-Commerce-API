@@ -50,11 +50,16 @@ class CartController extends ApiResponse
         $cart=$user->customer->cart;
         if(!empty($cart->items))
         {
-            foreach ($cart->items as $item)
+            $items=$cart->items()->with('product')->get();
+            foreach ($items as $item)
             {
                 if ($item->product_id==$product->id)
                 {
-                    $item->quantity=$quantity;
+                    if($item->quantity==$item->product->quantity)
+                    {
+                        return $this->handleError('Failed.', ['this quantity not available'], 402);
+                    }
+                    $item->quantity+=$quantity;
                     $item->save();
                     $totalQuantity=DB::table('cart_products')
                         ->where('cart_id','=',$cart->id)
