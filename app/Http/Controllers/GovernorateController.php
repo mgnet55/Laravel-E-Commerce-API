@@ -5,13 +5,14 @@ namespace App\Http\Controllers;
 use App\Http\Requests\GovernorateRequest;
 use App\Models\Governorate;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 
 class GovernorateController extends Controller
 {
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function index()
     {
@@ -22,7 +23,7 @@ class GovernorateController extends Controller
      * Store a newly created resource in storage.
      *
      * @param GovernorateRequest $request
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function store(GovernorateRequest $request)
     {
@@ -33,11 +34,11 @@ class GovernorateController extends Controller
      * Display the specified resource.
      *
      * @param Governorate $governorate
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function show(Governorate $governorate)
     {
-        return $governorate->cities()->get(['id','name']);
+        return $governorate->cities()->get();
     }
 
     /**
@@ -45,7 +46,7 @@ class GovernorateController extends Controller
      *
      * @param Request $request
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function update(GovernorateRequest $request,Governorate $governorate)
     {
@@ -56,7 +57,7 @@ class GovernorateController extends Controller
      * Remove the specified resource from storage.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function destroy(Governorate $governorate)
     {

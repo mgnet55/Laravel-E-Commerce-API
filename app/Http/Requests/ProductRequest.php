@@ -3,7 +3,6 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Support\Facades\Auth;
 
 class ProductRequest extends FormRequest
 {
@@ -14,7 +13,7 @@ class ProductRequest extends FormRequest
      */
     public function authorize()
     {
-        return Auth::user()->hasAnyRole(['seller','admin']);
+        return true;
     }
 
     /**
@@ -24,20 +23,52 @@ class ProductRequest extends FormRequest
      */
     public function rules()
     {
-        $rules = [
-            'name'=>'required|string',
-            'description'=>'required|string',
-            'quantity'=>'required|numeric',
-            'price'=>'required|regex:/^\d{1,13}(\.\d{1,4})?$/',
-            'user_id'=>'numeric|exists:users,id',
-            'category_id'=>'required|numeric|exists:categories,id'
-        ];
-         if($this->method() == 'POST')
-         {
-            $rules['image'] = 'image|mimes:png,jpg,jpeg';
-         }
+        if ($this->method() == 'POST'){
+            return  [
+                'name' => 'required|string',
+                'description' => 'required|string',
+                'quantity' => 'required|numeric|min:1',
+                'price' => 'required|numeric|min:1',
+                'seller_id' => 'numeric|exists:users,id',
+                'category_id' => 'required|numeric|exists:categories,id',
+                'image' => 'required|image|mimes:png,jpg,jpeg'
+            ];
+        }
+        else
+            return [
+                'name' => 'string',
+                'description' => 'string',
+                'quantity' => 'numeric',
+                'price' => 'numeric|min:1',
+                'category_id' => 'numeric|exists:categories,id',
+                'image' => 'image|mimes:png,jpg,jpeg'
+            ];
 
-        return $rules;
+
+//        $rules = [
+//            'name' => 'required|string',
+//            'description' => 'required|string',
+//            'quantity' => 'required|numeric',
+//            'price' => 'required|numeric|min:1',
+//            'user_id' => 'numeric|exists:users,id',
+//            'category_id' => 'required|numeric|exists:categories,id'
+//        ];
+//        if ($this->method() == 'POST') {
+//            $rules['image'] = 'image|mimes:png,jpg,jpeg';
+//        }
+//
+//        if ($this->method() == 'PUT' || $this->method() == 'PATCH') {
+//            $rules = [
+//                'name' => 'string',
+//                'description' => 'string',
+//                'quantity' => 'numeric',
+//                'price' => 'numeric|min:1',
+//                'user_id' => 'numeric|exists:users,id',
+//                'category_id' => 'numeric|exists:categories,id'
+//            ];
+//        }
+//
+//        return $rules;
     }
 
     /**

@@ -10,7 +10,7 @@ class Product extends Model
     use HasFactory;
 
     protected $fillable = [
-        'name', 'description','quantity','price','image','user_id','category_id','available'
+        'name', 'description','quantity','price','image','seller_id','category_id','available'
     ];
 
     protected $casts=[
@@ -18,16 +18,24 @@ class Product extends Model
 
     ];
 
+    protected $appends=[
+        'soldCount'
+    ];
+
     protected $hidden=[
         'created_at', 'updated_at','category_id'
     ];
 
     function seller(){
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(Seller::class);
     }
 
     function category(){
         return $this->belongsTo(Category::class);
+    }
+
+    function getSoldCountAttribute(){
+        return OrderItems::where('product_id','=',$this->id)->sum('quantity');
     }
 
 }

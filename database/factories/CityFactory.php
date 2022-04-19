@@ -18,7 +18,7 @@ class CityFactory extends Factory
     {
         return [
             'name' => $this->faker->city(),
-            'governorate_id' => $this->faker->randomElement([1,2,3,4,5,6]),
+            'governorate_id' => $this->faker->randomElement([1,2,3,4,5]),
         ];
     }
 }

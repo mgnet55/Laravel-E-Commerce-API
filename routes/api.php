@@ -56,6 +56,8 @@ Route::get('orderItems/{id}', [OrderController::class, 'getOrderDetails']);
 //permissions
 Route::post('login', [AuthController::class, 'login']);
 Route::post('register', [AuthController::class, 'register']);
+Route::get('logout/all', [AuthController::class, 'logoutAllDevices']);
+Route::get('logout', [AuthController::class, 'logout']);
 
 // Cart,Checkout
 Route::group(['prefix' => 'cart', 'middleware' => 'auth:sanctum'], function () {
@@ -67,14 +69,15 @@ Route::group(['prefix' => 'cart', 'middleware' => 'auth:sanctum'], function () {
     Route::get('info', [CartController::class, 'getCartInfo']);
     Route::get('items', [CartController::class, 'getItemsNumber']);
 });
+
 Route::post('checkout', [CheckoutController::class, 'charge'])->middleware('auth:sanctum');
 
-Route::get('test', function(){
+Route::get('test', function () {
     return \App\Models\User::find(17);
 });
 
 //Seller Routes
-Route::group(['prefix' => 'seller','middleware'=>'auth:sanctum'], function () {
+Route::group(['prefix' => 'seller', 'middleware' => 'auth:sanctum'], function () {
     Route::group(['prefix' => 'products'], function () {
         Route::get('/', [SellerController::class, 'products']);
         Route::post('/', [SellerController::class, 'createProduct']);
@@ -85,7 +88,7 @@ Route::group(['prefix' => 'seller','middleware'=>'auth:sanctum'], function () {
     Route::group(['prefix' => 'orders'], function () {
         Route::get('pending', [SellerController::class, 'pendingOrders']);
         Route::get('picked', [SellerController::class, 'pickedOrders']);
-        Route::get('/', [SellerController::class, 'orderItems']);
+        Route::get('/', [SellerController::class, 'allOrders']);
     });
     Route::group(['prefix' => 'payments'], function () {
         Route::get('fulfilled', [SellerController::class, 'fulfilled']);
@@ -94,5 +97,5 @@ Route::group(['prefix' => 'seller','middleware'=>'auth:sanctum'], function () {
 });
 
 
-Route::get('customer/orders',[CustomerController::class,'getOrders'])->middleware('auth:sanctum');
-Route::get('customer/orders/{order}',[CustomerController::class,'orderDetails'])->middleware('auth:sanctum');
+Route::get('customer/orders', [CustomerController::class, 'getOrders'])->middleware('auth:sanctum');
+Route::get('customer/orders/{order}', [CustomerController::class, 'orderDetails'])->middleware('auth:sanctum');

@@ -26,7 +26,7 @@ class User extends Authenticatable
         'city_id',
         'phone',
         'active',
-        'bank_id'
+        'bank_id',
     ];
 
     /**
@@ -41,20 +41,14 @@ class User extends Authenticatable
         'created_at',
         'deleted_at',
         'updated_at',
-        'address',
         'bank_id',
         'city_id',
         'active'
     ];
 
-    protected $appends = [
-        //'location',
-    ];
-
     protected $with=[
         'city'
     ];
-
 
     /**
      * The attributes that should be cast.
@@ -69,7 +63,7 @@ class User extends Authenticatable
 
     public function customer()
     {
-        //if (auth()->user()->hasRole('customer'))
+        if (auth()->user()->hasRole('customer'))
         return $this->belongsTo(Customer::class, 'id');
     }
 
@@ -84,9 +78,9 @@ class User extends Authenticatable
         return $this->belongsTo(Seller::class, 'id');
     }
 
-    public function ShippingCompany()
+    public function ShippingManager()
     {
-        return $this->hasOne(ShippingCompany::class, 'user_id', 'id');
+        return $this->belongsTo(ShippingManager::class,'id');
     }
 
     public function city()

@@ -23,10 +23,10 @@ return new class extends Migration
             $table->float('discount')->default(0);
             $table->text('image')->nullable();
             $table->boolean('available')->default(false);
-            $table->unsignedBigInteger('user_id');
+            $table->unsignedBigInteger('seller_id');
             $table->unsignedBigInteger('category_id')->default(1);
 
-            $table->foreign('user_id')
+            $table->foreign('seller_id')
                   ->references('id')
                   ->on('users')
                   ->onupdate('cascade')

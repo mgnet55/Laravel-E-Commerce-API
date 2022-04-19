@@ -11,13 +11,11 @@ use Illuminate\Support\Facades\Auth;
 
 class AuthController extends ApiResponse
 {
-
-
     public function login(LoginRequest $request)
     {
 
         if (Auth::attempt(['email' => $request->email, 'password' => $request->password], !!$request['remember_token'])) {
-//            $auth = Auth::user();
+
             $data = [
                 'token'=> Auth::user()->createToken('api_token')->plainTextToken,
                 'name' => Auth::user()->name,
@@ -32,7 +30,7 @@ class AuthController extends ApiResponse
     public function register(RegisterRequest $request)
     {
 
-//        $input = $request->except('avatar');
+        $input = $request->all();
         $input['avatar'] = ImageManager::upload($request, 'avatar', 'profiles');
         $input['password'] = bcrypt($input['password']);
         $user = User::create($input);

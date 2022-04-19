@@ -20,15 +20,21 @@ return new class extends Migration {
             $table->integer('quantity');
             $table->float('price');
             $table->text('image');
+            $table->boolean('picked')->default(false);
             $table->float('discount')->default(0);
-            $table->unsignedBigInteger('user_id')->nullable();
+            $table->unsignedBigInteger('order_id');
+            $table->unsignedBigInteger('product_id')->nullable();
             $table->boolean('fulfilled')->default(false);
-            $table->foreign('user_id')
+            $table->foreign('product_id')
                 ->references('id')
-                ->on('users')
+                ->on('products')
                 ->onupdate('cascade')
                 ->onDelete('set null');
-
+            $table->foreign('order_id')
+                ->references('id')
+                ->on('orders')
+                ->onupdate('cascade')
+                ->onDelete('cascade');
         });
     }
 

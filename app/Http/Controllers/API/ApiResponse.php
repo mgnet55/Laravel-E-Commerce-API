@@ -8,14 +8,14 @@ use App\Http\Controllers\Controller as Controller;
 class ApiResponse extends Controller
 {
 
-    public function handleResponse($result, $msg=''): \Illuminate\Http\JsonResponse
+    public function handleResponse($result, $msg='',$statusCode=200): \Illuminate\Http\JsonResponse
     {
         $res = [
             'success' => true,
             'data'    => $result,
             'message' => $msg,
         ];
-        return response()->json($res, 200);
+        return response()->json($res, $statusCode);
     }
 
     public function handleError($error, $errorMsg = [], $code = 400): \Illuminate\Http\JsonResponse

@@ -6,9 +6,9 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
 
 /**
- * @extends Factory
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\OrderItems>
  */
-class ProductFactory extends Factory
+class OrderItemsFactory extends Factory
 {
     /**
      * Define the model's default state.
@@ -19,14 +19,15 @@ class ProductFactory extends Factory
     {
         return [
             'name' => $this->faker->name(),
+            'order_id' => $this->faker->randomDigitNotZero(),
             'description' => $this->faker->text,
             'quantity' => $this->faker->randomNumber(2),
-            'price' => $this->faker->randomElement([1,2,3,4,5]),
-            'image'=>'product_'.$this->faker->randomElement([1,2,3,4,5]).'.jpg',
-            'seller_id'=>$this->faker->randomElement([11,12,13,14,15]),
-            'category_id'=>$this->faker->randomElement([1,2,3,4,5]),
-            'available'=>$this->faker->randomElement([false,true]),
+            'price' => $this->faker->randomFloat(2,10,999),
+            'image'=>'product_'.Str::random(10).'.jpg',
+            'product_id'=>$this->faker->randomDigitNotZero(),
             'discount'=>$this->faker->randomDigit()/10,
+            'picked'=>$this->faker->boolean(),
+            'fulfilled'=>$this->faker->boolean(),
         ];
     }
 }

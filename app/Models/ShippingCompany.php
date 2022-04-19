@@ -9,6 +9,8 @@ class ShippingCompany extends Model
 {
     use HasFactory;
 
+    protected $table = 'users';
+
     protected $fillable = [
         'name',
         'user_id',
@@ -18,12 +20,12 @@ class ShippingCompany extends Model
     ];
 
     protected $hidden = [
-        'user_id'
+        'shipping_manager_id'
     ];
 
     public function manager(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
-        return $this->belongsTo(User::class)->with(User::class);
+        return $this->belongsTo(ShippingManager::class,'shipping_manager_id','id');
     }
 
     public function city(): \Illuminate\Database\Eloquent\Relations\BelongsTo
@@ -40,23 +42,20 @@ class ShippingCompany extends Model
     {
         return $this->hasMany(Order::class)
             ->where('status', '=', 'on Way')
-            ->orderBy('id', 'desc')->withSum('orderItems','quantity*price')
-            ;//->with(orderItems::class);
+            ->orderBy('id', 'desc');
     }
 
     public function deliveredOrders(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
         return $this->hasMany(Order::class)
             ->where('status', '=', 'Done')
-            ->orderBy('id', 'desc')
-            ->with(orderItems::class);
+            ->orderBy('id', 'desc');
     }
 
     public function processingOrders(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
         return $this->hasMany(Order::class)
-            ->where('status', '=', 'Processing')
-            ->with(orderItems::class, fn($query) => $query->with('user:id,name,address,phone'));
+            ->where('status', '=', 'Processing');
 
     }
 

@@ -25,9 +25,8 @@ class OrderItems extends Model
     protected $hidden=[
         'fulfilled',
         'updated_at',
-        'user_id',
+        'customer_id',
         'order_id',
-        'created_at',
         'updated_at',
 
         ];
@@ -36,7 +35,10 @@ class OrderItems extends Model
         'created_at'=>'datetime'
     ];
 
-    protected $appends = ['total'];
+    protected $appends = [
+        'sale_price',
+        'total',
+    ];
 
 
     public function order()
@@ -44,11 +46,16 @@ class OrderItems extends Model
         return $this->belongsTo(Order::class);
     }
 
+    public function getSalePriceAttribute(): float|int
+    {
+        return $this->price*(1-$this->discount);
+    }
+
     public function getTotalAttribute(){
         return ($this->quantity*$this->price*(1-$this->discount));
     }
 
     public function seller(){
-        return $this->belongsTo(User::class,'user_id');
+        return $this->belongsTo(Seller::class);
     }
 }
