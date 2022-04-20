@@ -20,7 +20,7 @@ class SellerController extends ApiResponse
 
     public function allOrders(): \Illuminate\Http\JsonResponse
     {
-        return $this->handleResponse(Auth::user()->seller->orderItems()->paginate(30),);
+        return $this->handleResponse(Auth::user()->seller->allOrders()->paginate(30),);
     }
 
     public function pendingOrders(): \Illuminate\Http\JsonResponse
@@ -46,6 +46,22 @@ class SellerController extends ApiResponse
     public function products(): \Illuminate\Http\JsonResponse
     {
         return $this->handleResponse(Auth::user()->seller->products()->with('category')->paginate(30));
+    }
+
+    public function availableProducts(): \Illuminate\Http\JsonResponse
+    {
+        return $this->handleResponse(Auth::user()->seller->availableProducts()->with('category')->paginate(30));
+    }
+
+    public function unavailableProducts(): \Illuminate\Http\JsonResponse
+    {
+        return $this->handleResponse(Auth::user()->seller->unavailableProducts()->with('category')->paginate(30));
+    }
+
+    public function zeroStock(): \Illuminate\Http\JsonResponse
+    {
+        return $this->handleResponse(Auth::user()->seller->zeroStock()->with('category')->paginate(30));
+
     }
 
     /**

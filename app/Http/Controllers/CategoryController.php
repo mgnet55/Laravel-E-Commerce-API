@@ -2,10 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Classes\ImageManager;
 use App\Http\Controllers\API\ApiResponse;
 use App\Http\Requests\CategoryRequest;
 use App\Models\Category;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\File;
+use Throwable;
 
 class CategoryController extends ApiResponse
 {
@@ -13,7 +16,7 @@ class CategoryController extends ApiResponse
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return JsonResponse
      */
     public function index()
     {
@@ -25,7 +28,7 @@ class CategoryController extends ApiResponse
      * Store a newly created resource in storage.
      *
      * @param CategoryRequest $request
-     * @return Response
+     * @return JsonResponse
      */
 
     public function store(CategoryRequest $request)
@@ -35,7 +38,7 @@ class CategoryController extends ApiResponse
         $category = Category::firstOrCreate([...$request->except('image'), 'image' => $imageName]);
         if ($category) {
             return $this->handleResponse([], 'Created Successuly');
-        }else{
+        } else {
             return $this->handleError('Failed.', ['Category not added'], 402);
         }
 
@@ -44,8 +47,8 @@ class CategoryController extends ApiResponse
     /**
      * Display the specified resource.
      *
-     * @param int $id
-     * @return \Illuminate\Http\Response
+     * @param Category $category
+     * @return JsonResponse
      */
 
     public function show(Category $category)
@@ -56,38 +59,39 @@ class CategoryController extends ApiResponse
     /**
      * Update the specified resource in storage.
      *
-     * @param \Illuminate\Http\Request $request
-     * @param int $id
-     * @return \Illuminate\Http\Response
+     * @param CategoryRequest $request
+     * @param Category $category
+     * @return JsonResponse
+     * @throws Throwable
      */
 
     public function update(CategoryRequest $request, Category $category)
     {
 
-        if ($request->hasFile('image')) {
-            $oldImageName = $category->image;
-            $imageName = substr($oldImageName, 0, strrpos($oldImageName, ".")) . '.' . $request->image->extension();
-            $request->image->move(public_path('categories'), $imageName);
+        ImageManager::update($request, 'image', $category->image, 'categories');
+        if ($category->updateOrFail($request->all())) {
+            return $this->handleResponse($category, 'Category updated successfully');
         }
-        return $category->updateOrFail($request);
+        return $this->handleError('Failed', 'Failed to update category');
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param int $id
-     * @return \Illuminate\Http\Response
+     * @param Category $category
+     * @return JsonResponse
+     * @throws Throwable
      */
 
-    public function destroy(Category $category)
+    public function destroy(Category $category): JsonResponse
     {
         $imageName = $category->image;
         if ($category->deleteOrFail()) {
             if (File::exists(public_path('categories/' . $imageName))) {
                 File::delete(public_path('categories/' . $imageName));
             }
-            return true;
+            return $this->handleResponse('', 'Category deleted successfully');
         }
-        return false;
+        return $this->handleError('Failed', 'Failed to delete Category');
     }
 }

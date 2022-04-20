@@ -35,7 +35,7 @@ class ShippingCompany extends Model
 
     public function orders(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
-        return $this->hasMany(Order::class)->with(OrderItems::class);
+        return $this->hasMany(Order::class);
     }
 
     public function onWayOrders(): \Illuminate\Database\Eloquent\Relations\HasMany
@@ -64,7 +64,7 @@ class ShippingCompany extends Model
     {
         return $this->hasManyThrough(OrderItems::class, Order::class)
             ->where('picked', '=', false)
-            ->with('seller');
+            ->with('seller:id,name,phone,address,');
     }
 
     //products picked up waiting to be delivered to customer
@@ -72,7 +72,7 @@ class ShippingCompany extends Model
     {
         return $this->hasManyThrough(OrderItems::class, Order::class)
             ->where('picked', '=', true)
-            ->with(User::class)
+            ->with('seller:id,name,phone,address,')
             ->orderBy('id', 'desc');
     }
 

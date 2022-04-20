@@ -9,6 +9,9 @@ use Illuminate\Http\Response;
 
 class GovernorateController extends Controller
 {
+    public function __construct(){
+        $this->middleware('role:admin')->except(['index','show']);
+    }
     /**
      * Display a listing of the resource.
      *
@@ -16,7 +19,8 @@ class GovernorateController extends Controller
      */
     public function index()
     {
-        return Governorate::all();
+        return Governorate::all()->with('cities');
+
     }
 
     /**
@@ -38,7 +42,8 @@ class GovernorateController extends Controller
      */
     public function show(Governorate $governorate)
     {
-        return $governorate->cities()->get();
+
+        return $governorate;
     }
 
     /**
@@ -62,5 +67,9 @@ class GovernorateController extends Controller
     public function destroy(Governorate $governorate)
     {
         return $governorate->deleteOrFail();
+    }
+
+    public function cities(Governorate $governorate){
+        return $governorate->cities()->get();
     }
 }

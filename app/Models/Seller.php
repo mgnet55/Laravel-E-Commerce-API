@@ -32,6 +32,10 @@ class Seller extends Authenticatable
 
     ];
 
+    protected $with=[
+        'city'
+    ];
+
     /**
      * The attributes that should be cast.
      *
@@ -49,10 +53,34 @@ class Seller extends Authenticatable
             $builder->where('active', '=', true);
         });
     }
+    public function city(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    {
+        return $this->belongsTo(City::class);
+    }
 
     public function products(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
         return $this->hasMany(Product::class)
+            ->orderBy('id', 'desc');
+    }
+
+    public function availableProducts(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(Product::class)
+            ->where('available','=',true)
+            ->orderBy('id', 'desc');
+    }
+
+    public function noStockProducts(){
+        return $this->hasMany(Product::class)
+            ->where('quantity','=',0)
+            ->orderBy('updated_at', 'desc');
+    }
+
+    public function unavailableProducts(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(Product::class)
+            ->where('available','=',false)
             ->orderBy('id', 'desc');
     }
 

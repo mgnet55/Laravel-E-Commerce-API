@@ -13,7 +13,7 @@ class ShippingCompanyController extends ApiResponse
 
     public function __construct()
     {
-        $this->shippingCompany = Auth::user()->ShippingCompany;
+        $this->middleware('role:admin|shipping_manager');
     }
 
     /**
