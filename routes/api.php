@@ -70,8 +70,9 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
 //Seller Routes
 Route::group(['prefix' => 'seller', 'middleware' => 'auth:sanctum,Role:seller'], function () {
     Route::group(['prefix' => 'products'], function () {
-        Route::get('/available', [SellerController::class, 'products']);
-        Route::get('/unavailable', [SellerController::class, 'products']);
+        Route::get('/available', [SellerController::class, 'availableProducts']);
+        Route::get('/unavailable', [SellerController::class, 'unavailableProducts']);
+        Route::get('/zero-stock', [SellerController::class, 'zeroStock']);
         Route::get('/', [SellerController::class, 'products']);
         Route::post('/', [SellerController::class, 'createProduct']);
         Route::delete('{product}', [SellerController::class, 'deleteProduct']);
