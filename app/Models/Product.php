@@ -19,7 +19,8 @@ class Product extends Model
     ];
 
     protected $appends=[
-        'soldCount'
+        'soldCount',
+        'salePrice'
     ];
 
     protected $hidden=[
@@ -36,6 +37,11 @@ class Product extends Model
 
     function getSoldCountAttribute(){
         return OrderItems::where('product_id','=',$this->id)->sum('quantity');
+    }
+
+    public function getSalePriceAttribute(): float|int
+    {
+        return $this->price*(1-$this->discount);
     }
 
 }

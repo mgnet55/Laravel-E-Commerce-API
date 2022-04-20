@@ -9,8 +9,6 @@ class ShippingCompany extends Model
 {
     use HasFactory;
 
-    protected $table = 'users';
-
     protected $fillable = [
         'name',
         'user_id',
