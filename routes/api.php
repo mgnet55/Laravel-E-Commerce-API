@@ -78,6 +78,7 @@ Route::group(['prefix' => 'seller', 'middleware' => 'auth:sanctum,Role:seller'],
         Route::delete('{product}', [SellerController::class, 'deleteProduct']);
         Route::put('{product}', [SellerController::class, 'updateProduct']);
         Route::patch('{product}', [SellerController::class, 'updateProduct']);
+        Route::get('{product}', [SellerController::class, 'showProduct']);
     });
     Route::group(['prefix' => 'orders'], function () {
         Route::get('pending', [SellerController::class, 'pendingOrders']);
