@@ -58,8 +58,8 @@ Route::post('editprofile', [UserController::class, 'updateProfile'])
 Route::get('orderItems/{id}', [OrderController::class, 'getOrderDetails']);
 
 //permissions
-Route::post('login', [AuthController::class, 'login']);
-Route::post('register', [AuthController::class, 'register']);
+Route::post('{type}/login', [AuthController::class, 'login']);
+Route::post('{type}/register', [AuthController::class, 'register']);
 Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::get('logout/all', [AuthController::class, 'logoutAllDevices']);
     Route::get('logout', [AuthController::class, 'logout']);
@@ -68,7 +68,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
 
 
 //Seller Routes
-Route::group(['prefix' => 'seller', 'middleware' => 'auth:sanctum,Role:seller'], function () {
+Route::group(['prefix' => 'seller', 'middleware' => ['auth:sanctum','role:seller']], function () {
     Route::group(['prefix' => 'products'], function () {
         Route::get('/available', [SellerController::class, 'availableProducts']);
         Route::get('/unavailable', [SellerController::class, 'unavailableProducts']);
@@ -92,7 +92,7 @@ Route::group(['prefix' => 'seller', 'middleware' => 'auth:sanctum,Role:seller'],
 
 });
 
-Route::group(['prefix' => 'customer', 'middleware' => 'auth:sanctum,Role:customer'], function () {
+Route::group(['prefix' => 'customer', 'middleware' => ['auth:sanctum','role:customer']], function () {
     //orders
     Route::group(['prefix' => 'orders'], function () {
         Route::get('{order}', [CustomerController::class, 'orderDetails'])->middleware('auth:sanctum');

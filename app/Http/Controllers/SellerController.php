@@ -1,5 +1,6 @@
 <?php
 /** @noinspection PhpUndefinedFieldInspection */
+
 /** @noinspection PhpUnused */
 
 namespace App\Http\Controllers;
@@ -15,7 +16,6 @@ class SellerController extends ApiResponse
 
     public function __construct()
     {
-        $this->middleware(['role:seller']);
     }
 
     public function allOrders(): \Illuminate\Http\JsonResponse

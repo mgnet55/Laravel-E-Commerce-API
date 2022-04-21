@@ -19,7 +19,7 @@ class GovernorateController extends Controller
      */
     public function index()
     {
-        return Governorate::all()->with('cities');
+        return Governorate::with('cities')->get();
 
     }
 
