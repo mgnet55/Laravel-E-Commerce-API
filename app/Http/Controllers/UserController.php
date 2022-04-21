@@ -2,13 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\User;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Auth;
-use App\Http\Requests\RegisterRequest;
 use App\Http\Controllers\API\ApiResponse;
 use App\Http\Requests\ProfileUpdateRequest;
+use App\Http\Requests\RegisterRequest;
+use App\Models\User;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class UserController extends ApiResponse
 {
@@ -25,7 +24,7 @@ class UserController extends ApiResponse
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
@@ -36,7 +35,7 @@ class UserController extends ApiResponse
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function show($id)
@@ -47,8 +46,8 @@ class UserController extends ApiResponse
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param \Illuminate\Http\Request $request
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function update(RegisterRequest $request)
@@ -59,7 +58,7 @@ class UserController extends ApiResponse
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)
@@ -67,7 +66,8 @@ class UserController extends ApiResponse
         //
     }
 
-    public function getProfile(){
+    public function getProfile()
+    {
 
 
         $user = User::find(Auth::id());
@@ -86,10 +86,10 @@ class UserController extends ApiResponse
         $user->address = $request['address'];
         $user->city_id = $request['city_id'];
 
-        if($user->save()){
-          return handleResponse($user,'Successfully Updated');
-        }else{
-          return handleError('failed','failed to update profile');
+        if ($user->save()) {
+            return $this->handleResponse($user, 'Successfully Updated');
+        } else {
+            return $this->handleError('Failed', 'Failed to update profile');
         }
     }
 }

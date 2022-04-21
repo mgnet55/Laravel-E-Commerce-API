@@ -27,7 +27,7 @@ class OrderRequest extends FormRequest
                 'city_id'=>'required|exists:cities,id',
                 'street'=>'required|string',
                 'status'=>'in:Processing,On way,Done',
-                'shipping_id'=>'numeric|exists:shipping_companies,id',
+                'shipping_company_id'=>'numeric|exists:shipping_companies,id',
                 'notes'=>'string'
         ];
     }

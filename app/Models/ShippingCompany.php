@@ -18,12 +18,12 @@ class ShippingCompany extends Model
     ];
 
     protected $hidden = [
-        'user_id'
+        'shipping_manager_id'
     ];
 
     public function manager(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
-        return $this->belongsTo(User::class)->with(User::class);
+        return $this->belongsTo(ShippingManager::class,'shipping_manager_id','id');
     }
 
     public function city(): \Illuminate\Database\Eloquent\Relations\BelongsTo
@@ -33,30 +33,27 @@ class ShippingCompany extends Model
 
     public function orders(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
-        return $this->hasMany(Order::class)->with(OrderItems::class);
+        return $this->hasMany(Order::class);
     }
 
     public function onWayOrders(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
         return $this->hasMany(Order::class)
             ->where('status', '=', 'on Way')
-            ->orderBy('id', 'desc')->withSum('orderItems','quantity*price')
-            ;//->with(orderItems::class);
+            ->orderBy('id', 'desc');
     }
 
     public function deliveredOrders(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
         return $this->hasMany(Order::class)
             ->where('status', '=', 'Done')
-            ->orderBy('id', 'desc')
-            ->with(orderItems::class);
+            ->orderBy('id', 'desc');
     }
 
     public function processingOrders(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
         return $this->hasMany(Order::class)
-            ->where('status', '=', 'Processing')
-            ->with(orderItems::class, fn($query) => $query->with('user:id,name,address,phone'));
+            ->where('status', '=', 'Processing');
 
     }
 
@@ -65,7 +62,7 @@ class ShippingCompany extends Model
     {
         return $this->hasManyThrough(OrderItems::class, Order::class)
             ->where('picked', '=', false)
-            ->with('seller');
+            ->with('seller:id,name,phone,address,');
     }
 
     //products picked up waiting to be delivered to customer
@@ -73,7 +70,7 @@ class ShippingCompany extends Model
     {
         return $this->hasManyThrough(OrderItems::class, Order::class)
             ->where('picked', '=', true)
-            ->with(User::class)
+            ->with('seller:id,name,phone,address,')
             ->orderBy('id', 'desc');
     }
 

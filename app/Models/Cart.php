@@ -11,7 +11,7 @@ class Cart extends Model
 
     public function customer()
     {
-        return $this->belongsTo(User::class,'user_id');
+        return $this->belongsTo(Customer::class);
     }
     public function items()
     {

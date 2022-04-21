@@ -1,44 +1,26 @@
-<?php /** @noinspection PhpUndefinedFieldInspection */
+<?php
+/** @noinspection PhpUndefinedFieldInspection */
 
 /** @noinspection PhpUnused */
 
 namespace App\Http\Controllers;
 
-use App\Classes\ImageManager;
 use App\Http\Controllers\API\ApiResponse;
 use App\Http\Requests\ProductRequest;
 use App\Models\Product;
 use Illuminate\Support\Facades\Auth;
+use Throwable;
 
 class SellerController extends ApiResponse
 {
 
-//    public function __call($method, array $args)
-//    {
-//        if (auth()->user()->hasRole('seller')) {
-//                return call_user_func_array([$this, $method], $args);
-//        }
-//    }
-//
-    //protected Seller $seller;
-    protected ProductController $productController;
-
     public function __construct()
     {
-        //return Auth()->user();
-        //Auth::user()->seller =new Seller;
-        // User::where('id','=',Auth::id())->get()->seller;
-        //$this->productController = new ProductController;
     }
-
-//    public function authorize($ability, $arguments = []): \Illuminate\Auth\Access\Response
-//    {
-//        return auth()->user()->hasRole('seller');
-//    }
 
     public function allOrders(): \Illuminate\Http\JsonResponse
     {
-        return $this->handleResponse(Auth::user()->seller->orderItems()->paginate(30),);
+        return $this->handleResponse(Auth::user()->seller->allOrders()->paginate(30),);
     }
 
     public function pendingOrders(): \Illuminate\Http\JsonResponse
@@ -46,7 +28,7 @@ class SellerController extends ApiResponse
         return $this->handleResponse(Auth::user()->seller->pendingOrders()->paginate(30));
     }
 
-    public function sentOrders(): \Illuminate\Http\JsonResponse
+    public function pickedOrders(): \Illuminate\Http\JsonResponse
     {
         return $this->handleResponse(Auth::user()->seller->pickedOrders()->paginate(30));
     }
@@ -63,52 +45,63 @@ class SellerController extends ApiResponse
 
     public function products(): \Illuminate\Http\JsonResponse
     {
-        return $this->handleResponse(Auth::user()->seller->products()->with('category')->paginate(30));
+        return $this->handleResponse(Auth::user()->seller->products()->with('category')->paginate(3));
+    }
+
+    public function availableProducts(): \Illuminate\Http\JsonResponse
+    {
+        return $this->handleResponse(Auth::user()->seller->availableProducts()->with('category')->paginate(30));
+    }
+
+    public function unavailableProducts(): \Illuminate\Http\JsonResponse
+    {
+        return $this->handleResponse(Auth::user()->seller->unavailableProducts()->with('category')->paginate(30));
+    }
+
+    public function zeroStock(): \Illuminate\Http\JsonResponse
+    {
+        return $this->handleResponse(Auth::user()->seller->zeroStock()->with('category')->paginate(30));
+
     }
 
     /**
-     * @throws \Throwable
+     * @throws Throwable
      */
-    public function createProduct(ProductRequest $request)
+    public function createProduct(ProductRequest $request): \Illuminate\Http\JsonResponse
     {
-
-        $product = Product::firstOrCreate([
-            'name' => $request->get('name'),
-            'user_id' => Auth::id()
-        ]);
-        $product['image'] = ImageManager::upload($request, 'image', 'products');
-        if ($product->saveOrFail()) {
-            return $this->handleResponse('Success', 'Product created Successfully');
-        }
-        ImageManager::delete($product['image'], 'products');
-        return $this->handleError('failed', 'Failed to create product');
+        return (new ProductController)->store($request, Auth::id());
     }
 
-    public function updateProduct(ProductRequest $request, Product $product)
+    /**
+     * @throws Throwable
+     */
+    public function updateProduct(ProductRequest $request, Product $product): \Illuminate\Http\JsonResponse
     {
-        if (Auth::id() == $product->user_id) {
-            if ($product->updateOrFail($request->except('image'))) {
-                ImageManager::update($request, 'image', $product->image, 'products');
-                return $this->handleResponse('Success', 'Product updated Successfully');
-            } else {
-                return $this->handleError('failed', 'Failed to update product');
-            }
+        if (Auth::id() == $product->seller_id) {
+            return (new ProductController)->update($request, $product);
         }
-        return $this->handleError('unauthorized', 'Not your product', 403);
+        return $this->handleError('Not your product', ['Not your product'], 403);
     }
 
-    public function deleteProduct(Product $product)
+    /**
+     * @throws Throwable
+     */
+    public function deleteProduct(Product $product): \Illuminate\Http\JsonResponse
     {
-        if (Auth::id() == $product->user_id) {
-            if ($product->deleteOrFail()) {
-                ImageManager::delete($product->image, 'products');
-                return $this->handleResponse('Success', 'Product deleted Successfully');
-            } else {
-                return $this->handleError('failed', 'Failed to delete product');
-            }
+        if (Auth::id() == $product->seller_id) {
+            return (new ProductController)->destroy($product);
         }
-        return $this->handleError('unauthorized', 'Not your product', 403);
+        return $this->handleError('Not your product', ['Not your product'], 403);
     }
+
+    public function showProduct(Product $product): \Illuminate\Http\JsonResponse
+    {
+        if (Auth::id() == $product->seller_id) {
+            return (new ProductController)->show($product);
+        }
+        return $this->handleError('Unauthorized', ['Not your product'], 403);
+    }
+
 
 }
 

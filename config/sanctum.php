@@ -33,7 +33,8 @@ return [
     |
     */
 
-    'guard' => ['web'],
+//    'guard' => ['web'],
+    'guard' => ['customer','admin','seller','shipping_manager'],
 
     /*
     |--------------------------------------------------------------------------

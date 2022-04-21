@@ -2,11 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\API\ApiResponse;
 use App\Http\Requests\CityRequest;
 use App\Models\City;
 use Illuminate\Http\Request;
 
-class CityController extends Controller
+class CityController extends ApiResponse
 {
     /**
      * Display a listing of the resource.
@@ -15,7 +16,7 @@ class CityController extends Controller
      */
     public function index()
     {
-        return City::with('governorate:id,name')->get();
+        return $this->handleResponse(City::with('governorate:id,name')->get(),'cites');
     }
 
     /**
@@ -26,6 +27,10 @@ class CityController extends Controller
      */
     public function store(CityRequest $request)
     {
+        $found = City::where('name', '=', $request->get('name'))->where('governorate_id', '=', $request->get('governorate_id'))->first();
+        if ($found) {
+            return $this->handleError('Product already exists', ['Product already exists'], 409);
+        }
         City::firstOrCreate($request);
     }
 

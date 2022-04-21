@@ -22,7 +22,7 @@ return new class extends Migration
             $table->string('street');
             $table->enum('status',['Processing','On way','Done'])->default('Processing');
             $table->unsignedBigInteger('shipping_company_id')->nullable();
-            $table->unsignedBigInteger('user_id')->nullable();
+            $table->unsignedBigInteger('customer_id')->nullable();
             $table->string('notes')->nullable();
 
             $table->foreign('shipping_company_id')
@@ -30,7 +30,7 @@ return new class extends Migration
                   ->on('shipping_companies')
                   ->onDelete('set null')
                   ->onUpdate('cascade');
-            $table->foreign('user_id')
+            $table->foreign('customer_id')
                 ->references('id')
                 ->on('users')
                 ->onDelete('set null')

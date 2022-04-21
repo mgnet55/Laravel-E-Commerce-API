@@ -14,9 +14,10 @@ class Order extends Model
             'city_id',
             'street',
             'status',
-            'user_id',
+            'customer_id',
             'shipping_company_id',
-            'payment_ref'
+            'payment_ref',
+            'notes'
         ];
     protected $hidden = [];
 

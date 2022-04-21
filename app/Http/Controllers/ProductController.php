@@ -2,24 +2,18 @@
 
 namespace App\Http\Controllers;
 
+use App\Classes\ImageManager;
 use App\Http\Controllers\API\ApiResponse;
 use App\Http\Requests\ProductRequest;
 use App\Models\Product;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
-use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Auth;
+use Throwable;
 
 
 class ProductController extends ApiResponse
 {
-
-//   function __construct()
-//   {
-//        $this->middleware('permission:index product|add product|edit product|delete product', ['only' => ['index','show']]);
-//        $this->middleware('permission:add product', ['only' => ['create','store']]);
-//        $this->middleware('permission:edit product', ['only' => ['edit','update']]);
-//        $this->middleware('permission:delete product', ['only' => ['destroy']]);
-//     }
     /**
      * Display a listing of the resource.
      *
@@ -30,11 +24,10 @@ class ProductController extends ApiResponse
     {
         $name = request()->query('search', 'none');
         //return $name;
-        if ($name!='none') {
-            $products = Product::where('name', 'LIKE', "%{$name}%")->where('available','>',0)->orderBy('id', 'desc')->with('category:id,name')->paginate(30);
-        }
-        else {
-            $products = Product::latest()->where('available','=',true)->with('category:id,name')->paginate(30);
+        if ($name != 'none') {
+            $products = Product::where('name', 'LIKE', "%{$name}%")->where('available', '>', 0)->orderBy('id', 'desc')->with('category:id,name')->paginate(30);
+        } else {
+            $products = Product::latest()->where('available', '=', true)->with('category:id,name')->paginate(30);
 
         }
         return $this->handleResponse($products, 'products');
@@ -43,7 +36,7 @@ class ProductController extends ApiResponse
     function productsByCategory($category_id)
     {
 
-        $products = Product::where('available','=',true)->where('category_id', '=', $category_id)->orderBy('id', 'desc')->with('category:id,name')->paginate(30);
+        $products = Product::where('available', '=', true)->where('category_id', '=', $category_id)->orderBy('id', 'desc')->with('category:id,name')->paginate(30);
 
         return $this->handleResponse($products, 'products');
 
@@ -52,20 +45,28 @@ class ProductController extends ApiResponse
     /**
      * Store a newly created resource in storage.
      *
-     * @param \Illuminate\Http\Request $request
-     * @return Response
+     * @param ProductRequest $request
+     * @param int $userId
+     * @return JsonResponse
+     * @throws Throwable
      */
-    function store(ProductRequest $request)
+    function store(ProductRequest $request, int $sellerId): JsonResponse
     {
-        $imageName = 'prod_' . time() . '.' . $request->image->extension();
-        $request->image->move(public_path('products'), $imageName);
-        $input = Product::firstOrCreate([...$request->except('image'), 'image' => $imageName]);
-        if ($input) {
-
-            return $this->handleResponse($input, 'Product added successfully!');
-        } else {
-            return $this->handleError('Failed.', ['product not added'], 402);
+        if (Auth::user()->hasPermissionTo('create product')) {
+            $found = Product::where('name', '=', $request->get('name'))->where('seller_id', '=', $sellerId)->first();
+            if ($found) {
+                return $this->handleError('Product already exists', ['Product already exists'], 409);
+            }
+            $product = new Product($request->all());
+            $product->seller_id = $sellerId;
+            $product->image = ImageManager::generateName($request, 'image', 'product');
+            if ($product->saveOrFail()) {
+                ImageManager::upload($request, 'image', 'products', $product->image);
+                return $this->handleResponse($product, 'Product created Successfully');
+            }
+            return $this->handleError('Failed to save product', ['Failed to save product']);
         }
+        return $this->handleError('Unauthorized', ["You don't have the permission to create product"], 403);
     }
 
     /**
@@ -76,64 +77,56 @@ class ProductController extends ApiResponse
      */
     public function show(Product $product)
     {
-        if ($product) {
-
-            return $this->handleResponse($product, 'Done!');
-        } else {
-            return $this->handleError('Unauthorised.', ['error' => 'Unauthorised']);
-        }
+        // return $this->handleResponse($product, 'product');
+    //    return  auth()->user()->seller->products()->where('id' == $product->id)->get();
+        //  return $product->seller_id;
+        
+            return $this->handleResponse($product, 'Product Details');
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param \Illuminate\Http\Request $request
+     * @param ProductRequest $request
      * @param Product $product
-     * @return Response
+     * @return JsonResponse
+     * @throws Throwable
      */
-
 
     function update(ProductRequest $request, Product $product)
     {
-
-        if ($request->hasFile('image')) {
-            $oldImageName = $product->image;
-            $imageName = substr($oldImageName, 0, strrpos($oldImageName, ".")) . '.' . $request->image->extension();
-            $request->image->move(public_path('products'), $imageName);
+        if (Auth::user()->hasPermissionTo('update product')) {
+            if ($product->updateOrFail($request->except('image'))) {
+                ImageManager::update($request, 'image', $product->image, 'products');
+                return $this->handleResponse($product, 'Product Updated Successfully');
+            }
+            return $this->handleError('Failed to save product', ['Failed to save product'], 402);
         }
-        $input = $product->updateOrFail($request->all());
-        if ($input) {
+        return $this->handleError('Unauthorized', ["You don't have the permission to update product"], 403);
 
-            return $this->handleResponse($input, 'Product has been updated successfully!');
-        } else {
-            return $this->handleError('Unauthorised.', ['error' => 'Unauthorised']);
-        }
     }
 
     /**
      * Remove the specified resource from storage.
      *
      * @param Product $product
-     * @return Response
+     * @return JsonResponse
+     * @throws Throwable
      */
 
     function destroy(Product $product)
     {
-
-        $imageName = $product->image;
-        $delete = $product->deleteOrFail();
-
-        if ($delete) {
-
-            if (File::exists(public_path('products/' . $imageName))) {
-                File::delete(public_path('products/' . $imageName));
+        if (Auth::user()->hasPermissionTo('delete product')) {
+            if ($product->deleteOrFail()) {
+                ImageManager::delete($product->image, 'products');;
+                return $this->handleResponse($product, 'Product deleted Successfully');
             }
-            return $this->handleResponse($delete, 'Product has been deleted successfully!');
-        } else {
-            return $this->handleError('Unauthorised.', ['error' => 'Unauthorised']);
+            return $this->handleError('Failed to save product', ['Failed to save product'], 402);
         }
+        return $this->handleError('Unauthorized', ["You don't have the permission to update product"], 403);
 
     }
+
 
 
 }

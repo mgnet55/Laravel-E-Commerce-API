@@ -4,13 +4,17 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
+use Laravel\Sanctum\HasApiTokens;
+use Spatie\Permission\Traits\HasRoles;
 
-class Seller extends Model
+
+class Seller extends Authenticatable
 {
+    use HasApiTokens, HasFactory, Notifiable, HasRoles;
 
     protected $table = 'users';
-    use HasFactory;
 
     /**
      * The attributes that should be hidden for serialization.
@@ -23,11 +27,13 @@ class Seller extends Model
         'email_verified_at',
         'created_at',
         'deleted_at',
-        'bank_id',
-        'active',
         'email',
         'avatar',
 
+    ];
+
+    protected $with=[
+        'city'
     ];
 
     /**
@@ -37,7 +43,7 @@ class Seller extends Model
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
-        'picked' => 'boolean',
+        'active' => 'boolean'
 
     ];
 
@@ -47,46 +53,70 @@ class Seller extends Model
             $builder->where('active', '=', true);
         });
     }
-
-    public function products()
+    public function city(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
-        return $this->hasMany(Product::class, 'user_id')
+        return $this->belongsTo(City::class);
+    }
+
+    public function products(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(Product::class)
             ->orderBy('id', 'desc');
     }
 
-    public function pendingOrders()
+    public function availableProducts(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
-        return $this->hasMany(orderItems::class, 'user_id')
+        return $this->hasMany(Product::class)
+            ->where('available','=',true)
+            ->orderBy('id', 'desc');
+    }
+
+    public function noStockProducts(){
+        return $this->hasMany(Product::class)
+            ->where('quantity','=',0)
+            ->orderBy('updated_at', 'desc');
+    }
+
+    public function unavailableProducts(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(Product::class)
+            ->where('available','=',false)
+            ->orderBy('id', 'desc');
+    }
+
+    public function pendingOrders(): \Illuminate\Database\Eloquent\Relations\HasManyThrough
+    {
+        return $this->hasManyThrough(orderItems::class, Product::class)
             ->where('picked', '=', false)
             ->orderBy('id');
     }
 
-    public function pickedOrders()
+    public function pickedOrders(): \Illuminate\Database\Eloquent\Relations\HasManyThrough
     {
-        return $this->hasMany(orderItems::class, 'user_id')
+        return $this->hasManyThrough(orderItems::class, Product::class)
             ->where('picked', '=', true)
-            ->orderBy('created_at', 'desc');
+            ->orderBy('id', 'desc');
     }
 
-    public function fulfilled()
+    public function fulfilled(): \Illuminate\Database\Eloquent\Relations\HasManyThrough
     {
-        return $this->hasMany(orderItems::class, 'user_id')
+        return $this->hasManyThrough(orderItems::class, Product::class)
             ->where('fulfilled', '=', true)
             ->where('picked', '=', true)
             ->orderBy('id', 'desc');
     }
 
-    public function unfulfilled()
+    public function unfulfilled(): \Illuminate\Database\Eloquent\Relations\HasManyThrough
     {
-        return $this->hasMany(orderItems::class, 'user_id')
+        return $this->hasManyThrough(orderItems::class, Product::class)
             ->where('fulfilled', '=', false)
             ->where('picked', '=', true)
             ->orderBy('id');
     }
 
-    public function orderItems()
+    public function allOrders()
     {
-        return $this->hasMany(orderItems::class, 'user_id');
+        return $this->hasManyThrough(orderItems::class, Product::class);
     }
 
 

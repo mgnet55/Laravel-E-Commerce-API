@@ -19,7 +19,7 @@ return new class extends Migration
             $table->unsignedBigInteger('city_id')->nullable();
             $table->string('street')->nullable();
             $table->unsignedBigInteger('shipping_company_id')->nullable();
-            $table->unsignedBigInteger('user_id');
+            $table->unsignedBigInteger('customer_id');
             $table->string('notes')->nullable();
             $table->foreign('shipping_company_id')
                 ->references('id')

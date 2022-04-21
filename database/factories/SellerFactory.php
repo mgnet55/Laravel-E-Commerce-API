@@ -6,9 +6,9 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
 
 /**
- * @extends Factory
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Seller>
  */
-class UserFactory extends Factory
+class SellerFactory extends Factory
 {
     /**
      * Define the model's default state.
@@ -39,7 +39,7 @@ class UserFactory extends Factory
     {
         return $this->state(function (array $attributes) {
             return [
-                'email_verified_at' => null,
+                'email_verified_at' => now(),
             ];
         });
     }

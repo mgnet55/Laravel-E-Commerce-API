@@ -19,11 +19,11 @@ class OrderFactory extends Factory
         return [
             'city_id'=>1,
             'street'=>$this->faker->sentence,
-            'status'=>$this->faker->randomElement(['Processing','On the Way','Done']),
-            'total_price'=>$this->faker->randomFloat(2),
+            'status'=>$this->faker->randomElement(['Processing', 'On way', 'Done']),
             'shipping_company_id'=>1,
-            'user_id'=>1,
-            'notes'=>$this->faker->text
+            'customer_id'=>$this->faker->randomElement([1,2,3,4,5]),
+            'notes'=>$this->faker->text,
+            'payment_ref'=>'diffghifo45',
         ];
     }
 }

@@ -11,7 +11,7 @@ class RegisterRequest extends FormRequest
      *
      * @return bool
      */
-    public function authorize()
+    public function authorize(): bool
     {
         return true;
     }
@@ -27,7 +27,7 @@ class RegisterRequest extends FormRequest
 
             'name' => 'required|string',
             'email' => 'required|email|unique:users',
-            'password' => 'required|confirmed',
+            'password' => 'required',
             'avatar' => 'image|mimes:png,jpg,jpeg',
             'address' => 'required|string',
             'city_id' => 'required|numeric|exists:cities,id',

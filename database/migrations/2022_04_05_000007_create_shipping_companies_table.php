@@ -16,12 +16,18 @@ return new class extends Migration
         Schema::create('shipping_companies', function (Blueprint $table) {
             $table->id();
             $table->string('name')->unique();
-            $table->foreignId('user_id')->nullable()->constrained()->cascadeOnUpdate()->onDelete('set null');
-            $table->string('phone',15);
+            $table->unsignedBigInteger('shipping_manager_id')->nullable();
+            $table->string('phone',20);
             $table->foreignId('city_id')->constrained()->cascadeOnDelete()->cascadeOnUpdate();
             $table->string ('address_street');
             $table->timestamps();
             $table->softDeletes();
+            $table->foreign('shipping_manager_id')
+                ->references('id')
+                ->on('users')
+                ->onupdate('cascade')
+                ->onDelete('set null');
+
         });
     }
 
