@@ -32,7 +32,7 @@ class CartController extends ApiResponse
                 'totalQuantity'=>$totalQuantity], 'cart');
         }
         $cart=new Cart();
-        $cart->user_id=auth()->user()->id;
+        $cart->customer_id=auth()->user()->id;
         $cart->save();
         return $this->handleResponse(['cart'=>$cart],'cart');
     }
@@ -78,7 +78,7 @@ class CartController extends ApiResponse
             return $this->handleResponse(['totalQuantity'=>$totalQuantity],'add successfully');
         }
         $cart=new Cart();
-        $cart->user_id=auth()->user()->id;
+        $cart->customer_id=auth()->user()->id;
         $cart->save();
         $item=new CartProduct();
         $item->cart_id=$cart->id;

@@ -7,8 +7,6 @@ use App\Models\OrderItems;
 use App\Models\Product;
 use Cartalyst\Stripe\Laravel\Facades\Stripe;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
-use mysql_xdevapi\Exception;
 
 
 class CheckoutController extends Controller
@@ -44,7 +42,7 @@ class CheckoutController extends Controller
                 $order->city_id=$cart->city_id;
                 $order->street=$cart->street;
                 $order->shipping_company_id=$cart->shipping_company_id;
-                $order->user_id=$cart->user_id;
+                $order->customer_id=$cart->user_id;
                 $order->notes=$cart->notes;
                 if($order->save()) {
                     foreach ($items as $item) {

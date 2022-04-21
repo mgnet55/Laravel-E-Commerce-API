@@ -16,7 +16,8 @@ class Order extends Model
             'status',
             'customer_id',
             'shipping_company_id',
-            'payment_ref'
+            'payment_ref',
+            'notes'
         ];
     protected $hidden = [];
 
