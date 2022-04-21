@@ -28,8 +28,8 @@ class CartController extends ApiResponse
                 ->where('cart_id','=',$cart->id)
                 ->sum('quantity');
             return $this->handleResponse(['cart'=>$cart,'items'=>$cart->items()->with('product')->get(),
-                                         'totalPrice'=>$totalPrice,
-                                         'totalQuantity'=>$totalQuantity], 'cart');
+                'totalPrice'=>$totalPrice,
+                'totalQuantity'=>$totalQuantity], 'cart');
         }
         $cart=new Cart();
         $cart->user_id=auth()->user()->id;
@@ -42,7 +42,7 @@ class CartController extends ApiResponse
             ['quantity'=>'required|numeric']
         );
         $quantity=$request->quantity;
-        if($quantity>$product->quantity)
+        if($quantity>$product->quantity||$quantity<1||$quantity=='')
         {
             return $this->handleError('Failed.', ['this quantity not available'], 402);
         }
@@ -50,11 +50,16 @@ class CartController extends ApiResponse
         $cart=$user->customer->cart;
         if(!empty($cart->items))
         {
-            foreach ($cart->items as $item)
+            $items=$cart->items()->with('product')->get();
+            foreach ($items as $item)
             {
                 if ($item->product_id==$product->id)
                 {
-                    $item->quantity=$quantity;
+                    if($item->quantity==$item->product->quantity)
+                    {
+                        return $this->handleError('Failed.', ['this quantity not available'], 402);
+                    }
+                    $item->quantity+=$quantity;
                     $item->save();
                     $totalQuantity=DB::table('cart_products')
                         ->where('cart_id','=',$cart->id)
@@ -100,9 +105,9 @@ class CartController extends ApiResponse
                 $totalQuantity = DB::table('cart_products')
                     ->where('cart_id', '=', $cart->id)
                     ->sum('quantity');
-                return $this->handleResponse(['cart' => $cart->items()->with('product')->get(),
-                    'totalPrice' => $totalPrice,
-                    'totalQuantity' => $totalQuantity], 'item removed successfully');
+                return $this->handleResponse(['cart'=>$cart,'items'=>$cart->items()->with('product')->get(),
+                    'totalPrice'=>$totalPrice,
+                    'totalQuantity'=>$totalQuantity], 'item removed successfully');
             }
         }
     }
@@ -122,7 +127,7 @@ class CartController extends ApiResponse
             $cart->shipping_company_id=1;
             $cart->notes=$request['notes'];
             $cart->save();
-            return $this->handleResponse('success','data is ok');
+            return $this->handleResponse($cart,'data is ok');
         }catch (\Exception $e)
         {
             return $e->getMessage();
@@ -130,7 +135,7 @@ class CartController extends ApiResponse
     }
     public function getCartInfo()
     {
-         $user= auth()->user();
+        $user= auth()->user();
         return $user->customer->cart;;
     }
     public function update(Request $request)
@@ -145,6 +150,10 @@ class CartController extends ApiResponse
             {
                 if($product['id']==$item->id)
                 {
+                    if(($product['quantity']>$item->product->quantity||$product['quantity']<1)||$product['quantity']=='')
+                    {
+                        return $this->handleError('Failed.', ['this quantity not available'], 402);
+                    }
                     $item->quantity=$product['quantity'];
                     $item->save();
                     $totalPrice=0;
@@ -155,7 +164,7 @@ class CartController extends ApiResponse
                     $totalQuantity=DB::table('cart_products')
                         ->where('cart_id','=',$cart->id)
                         ->sum('quantity');
-                    return $this->handleResponse(['cart'=>$cart->items()->with('product')->get(),
+                    return $this->handleResponse(['cart'=>$cart,'items'=>$cart->items()->with('product')->get(),
                         'totalPrice'=>$totalPrice,
                         'totalQuantity'=>$totalQuantity], 'quantity updated successfully ');
                 }
