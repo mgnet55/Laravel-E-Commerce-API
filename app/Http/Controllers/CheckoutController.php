@@ -16,7 +16,7 @@ class CheckoutController extends ApiResponse
 {
     public function charge(Request $request)
     {
-//        $request->validate(['email'=>'required|email']);
+        $request->validate(['email'=>'required|email']);
         $tokens=$request->all();
         $user= auth()->user();
         $cart=$user->customer->cart;
