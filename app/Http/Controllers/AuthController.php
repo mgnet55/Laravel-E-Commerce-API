@@ -11,12 +11,12 @@ use Illuminate\Support\Facades\Auth;
 
 class AuthController extends ApiResponse
 {
-    public function login(LoginRequest $request, $type)
+    public function login(LoginRequest $request, $role)
     {
 
         if (Auth::attempt(['email' => $request->email, 'password' => $request->password], !!$request['remember_token'])) {
 
-            if (Auth::user()->hasRole($type)) {
+            if (Auth::user()->hasRole($role)) {
                 $data = [
                     'token' => Auth::user()->createToken('api_token')->plainTextToken,
                     'name' => Auth::user()->name,
