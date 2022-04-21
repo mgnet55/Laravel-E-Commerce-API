@@ -75,9 +75,13 @@ class ProductController extends ApiResponse
      * @param Product $product
      * @return JsonResponse
      */
-    public function show(Product $product): JsonResponse
+    public function show(Product $product)
     {
-        return $this->handleResponse($product, 'product');
+        // return $this->handleResponse($product, 'product');
+    //    return  auth()->user()->seller->products()->where('id' == $product->id)->get();
+        //  return $product->seller_id;
+        
+            return $this->handleResponse($product, 'Product Details');
     }
 
     /**
@@ -122,6 +126,7 @@ class ProductController extends ApiResponse
         return $this->handleError('Unauthorized', ["You don't have the permission to update product"], 403);
 
     }
+
 
 
 }

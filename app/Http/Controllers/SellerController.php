@@ -88,10 +88,18 @@ class SellerController extends ApiResponse
      */
     public function deleteProduct(Product $product): \Illuminate\Http\JsonResponse
     {
-        if (Auth::id() == $product->user_id) {
+        if (Auth::id() == $product->seller_id) {
             return (new ProductController)->destroy($product);
         }
         return $this->handleError('Not your product', ['Not your product'], 403);
+    }
+
+    public function showProduct(Product $product): \Illuminate\Http\JsonResponse
+    {
+        if (Auth::id() == $product->seller_id) {
+            return (new ProductController)->show($product);
+        }
+        return $this->handleError('Unauthorized', ['Not your product'], 403);
     }
 
 
