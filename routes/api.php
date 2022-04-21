@@ -59,7 +59,7 @@ Route::get('orderItems/{id}', [OrderController::class, 'getOrderDetails']);
 
 //permissions
 Route::post('{role}/login', [AuthController::class, 'login']);
-Route::post('{role}/register', [AuthController::class, 'register'])->where('type', 'seller|customer');
+Route::post('{role}/register', [AuthController::class, 'register'])->where('role', 'seller|customer');
 Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::get('logout/all', [AuthController::class, 'logoutAllDevices']);
     Route::get('logout', [AuthController::class, 'logout']);
