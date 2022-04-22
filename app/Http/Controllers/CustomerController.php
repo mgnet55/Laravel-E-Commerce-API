@@ -15,7 +15,7 @@ class CustomerController extends Controller
 
      public function orderDetails($id){
 
-     $order =  Order::where('id','=',$id)->where('user_id','=',auth()->id())->first();
+     $order =  Order::where('id','=',$id)->where('customer_id','=',auth()->id())->first();
 
         return $order->orderItems;
 
