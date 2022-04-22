@@ -1,23 +1,24 @@
 <?php
 
 namespace App\Http\Controllers;
+use App\Http\Controllers\API\ApiResponse;
 use App\Models\Order;
+use Illuminate\Support\Facades\Auth;
 
 
-class CustomerController extends Controller
+class CustomerController extends ApiResponse
 {
-     public function getOrders(){
+     public function orders(){
 
-        $customer = auth()->user()->customer;
+        $orders = auth()->user()->customer->orders()->paginate(30);
+        return $this->handleResponse($orders,'your orders');
 
-        return $customer->orders;
      }
 
-     public function orderDetails($id){
-
-     $order =  Order::where('id','=',$id)->where('customer_id','=',auth()->id())->first();
-
-        return $order->orderItems;
+     public function orderDetails(Order $order){
+        if($order->customer_id == Auth::id())
+            return $this->handleResponse($order,'Order details');
+        return $this->handleError('Not Your Order',['Not Your Order']);
 
      }
 

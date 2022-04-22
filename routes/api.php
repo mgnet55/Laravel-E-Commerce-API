@@ -96,7 +96,7 @@ Route::group(['prefix' => 'customer', 'middleware' => ['auth:sanctum', 'role:cus
     //orders
     Route::group(['prefix' => 'orders'], function () {
         Route::get('{order}', [CustomerController::class, 'orderDetails'])->middleware('auth:sanctum');
-        Route::get('/', [CustomerController::class, 'getOrders'])->middleware('auth:sanctum');
+        Route::get('/', [CustomerController::class, 'orders'])->middleware('auth:sanctum');
 
     });
     // Cart

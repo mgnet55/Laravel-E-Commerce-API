@@ -2,19 +2,19 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\API\ApiResponse;
 use Illuminate\Http\Request;
 use App\Models\Order;
 
-class OrderController extends Controller
+class OrderController extends ApiResponse
 {
     public function index()
     {
 //        return Order::class->
     }
 
-    public function getOrderDetails($id){
+    public function show(Order $order){
 
-        $order = Order::findOrFail($id);
-        return $order->orderItems;
+        $this->handleResponse($order->with('orderItems'),'order details') ;
     }
 }
