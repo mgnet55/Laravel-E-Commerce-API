@@ -97,12 +97,14 @@ class CartController extends ApiResponse
     {
         $user= auth()->user();
         $cart=$user->customer->cart;
-        foreach ($cart->items as $item)
+        $items=$cart->items()->with('product')->get();
+        foreach ($items as $item)
         {
             if ($item->product_id==$product->id) {
                 $item->delete();
                 $totalPrice = 0;
-                foreach ($cart->items as $item) {
+                $items=$cart->items()->with('product')->get();
+                foreach ($items as $item) {
                     if ($item->product->discount)
                         $totalPrice+=$item->quantity*$item->product->price*$item->product->discount;
                     else
