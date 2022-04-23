@@ -36,6 +36,7 @@ Route::get('products/category/{id}', [ProductController::class, 'productsByCateg
 //location-models
 Route::apiResource('category', CategoryController::class);
 Route::apiResource('governorate', GovernorateController::class);
+
 Route::apiResource('city', CityController::class);
 
 Route::get('test', function () {
@@ -59,7 +60,9 @@ Route::get('orderItems/{id}', [OrderController::class, 'getOrderDetails']);
 
 //permissions
 Route::post('{role}/login', [AuthController::class, 'login']);
+
 Route::post('{role}/register', [AuthController::class, 'register'])->where('role', 'seller|customer');
+
 Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::get('logout/all', [AuthController::class, 'logoutAllDevices']);
     Route::get('logout', [AuthController::class, 'logout']);

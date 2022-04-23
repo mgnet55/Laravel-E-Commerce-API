@@ -24,7 +24,10 @@ class CheckoutController extends ApiResponse
         $totalPrice=0;
         foreach ($items as $item)
         {
-            $totalPrice+=$item->quantity*$item->product->price;
+            if ($item->product->discount)
+                $totalPrice+=$item->quantity*$item->product->price*$item->product->discount;
+            else
+                $totalPrice+=$item->quantity*$item->product->price;
         }
         try {
             $charge= Stripe::charges()->create([
@@ -36,7 +39,6 @@ class CheckoutController extends ApiResponse
         {
             return $e->getMessage();
         }
-
         if($charge['id'])
         {
             try {

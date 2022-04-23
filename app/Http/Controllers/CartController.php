@@ -22,7 +22,10 @@ class CartController extends ApiResponse
             $totalPrice=0;
             foreach ($items as $item)
             {
-                $totalPrice+=$item->quantity*$item->product->price;
+                if ($item->product->discount)
+                    $totalPrice+=$item->quantity*$item->product->price*$item->product->discount;
+                else
+                    $totalPrice+=$item->quantity*$item->product->price;
             }
             $totalQuantity=DB::table('cart_products')
                 ->where('cart_id','=',$cart->id)
@@ -100,7 +103,10 @@ class CartController extends ApiResponse
                 $item->delete();
                 $totalPrice = 0;
                 foreach ($cart->items as $item) {
-                    $totalPrice += $item->quantity * $item->product->price;
+                    if ($item->product->discount)
+                        $totalPrice+=$item->quantity*$item->product->price*$item->product->discount;
+                    else
+                        $totalPrice+=$item->quantity*$item->product->price;
                 }
                 $totalQuantity = DB::table('cart_products')
                     ->where('cart_id', '=', $cart->id)
@@ -162,7 +168,10 @@ class CartController extends ApiResponse
         $totalPrice=0;
         foreach ($items as $item)
         {
-            $totalPrice+=$item->quantity*$item->product->price;
+            if ($item->product->discount)
+            $totalPrice+=$item->quantity*$item->product->price*$item->product->discount;
+            else
+                $totalPrice+=$item->quantity*$item->product->price;
         }
         $totalQuantity=DB::table('cart_products')
             ->where('cart_id','=',$cart->id)
@@ -175,9 +184,14 @@ class CartController extends ApiResponse
     {
         $user= auth()->user();
         $cart=$user->customer->cart;
-        $totalQuantity=DB::table('cart_products')
-            ->where('cart_id','=',$cart->id)
-            ->sum('quantity');
-        return $totalQuantity;
+        if($cart)
+        {
+            $totalQuantity=DB::table('cart_products')
+                ->where('cart_id','=',$cart->id)
+                ->sum('quantity');
+            return $this->handleResponse($totalQuantity,'items quantity');
+        }
+        return $this->handleResponse(0,'you don\'t add any items to your cart');
+
     }
 }
