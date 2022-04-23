@@ -16,7 +16,7 @@ class CityController extends ApiResponse
      */
     public function index()
     {
-        return $this->handleResponse(City::with('governorate:id,name')->get(),'cites');
+        return $this->handleResponse(City::all(),'cites');
     }
 
     /**
@@ -27,11 +27,19 @@ class CityController extends ApiResponse
      */
     public function store(CityRequest $request)
     {
+
         $found = City::where('name', '=', $request->get('name'))->where('governorate_id', '=', $request->get('governorate_id'))->first();
         if ($found) {
-            return $this->handleError('Product already exists', ['Product already exists'], 409);
+            return $this->handleError('City already exists', ['Product already exists'], 409);
         }
-        City::firstOrCreate($request);
+
+
+        return $this->handleResponse(
+            City::Create([
+                'name'=>$request->get('name'),
+                'governorate_id'=>$request->get('governorate_id')
+            ])
+            ,'city created successfully');
     }
 
     /**
@@ -40,12 +48,10 @@ class CityController extends ApiResponse
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(City $city)
     {
-        return City::with('governorate')->find($id);
-        //return $city->with('governorate')->get();
+        return $this->handleResponse($city,'city');
     }
-
     /**
      * Update the specified resource in storage.
      *
@@ -53,9 +59,13 @@ class CityController extends ApiResponse
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(CityRequest $request,City $city)
     {
-        //
+        $city->update([
+            'name'=>$request->get('name'),
+            'governorate_id'=>$request->get('governorate_id')
+        ]);
+        return $this->handleResponse($city,'city updated successfully');
     }
 
     /**
@@ -66,6 +76,8 @@ class CityController extends ApiResponse
      */
     public function destroy(City $city)
     {
-        return $city->deleteOrFail();
+        $city->delete();
+        return $this->handleResponse('city','city deleted successfully');
+
     }
 }

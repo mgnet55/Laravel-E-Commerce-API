@@ -24,9 +24,9 @@ class AuthController extends ApiResponse
                 ];
                 return $this->handleResponse($data, 'User logged-in!');
             }
-            return $this->handleError('Unauthorized.', ['Unauthorized' => "You don't have the right role"], 403);
+            return $this->handleError("You don't have the right role.", ["You don't have the right role"], 403);
         } else {
-            return $this->handleError('invalid credentials.', ['error' => 'invalid credentials'], 401);
+            return $this->handleError('invalid credentials.', ['invalid credentials'], 401);
         }
 
     }

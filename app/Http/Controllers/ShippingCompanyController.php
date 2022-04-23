@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\API\ApiResponse;
+use App\Http\Requests\ShippingCompanyRequest;
 use App\Models\ShippingCompany;
 use Illuminate\Support\Facades\Auth;
 
@@ -26,7 +27,10 @@ class ShippingCompanyController extends ApiResponse
         $companies = ShippingCompany::all();
         return $companies;
     }
-
+    public  function store(ShippingCompanyRequest $request)
+    {
+        return $request;
+    }
 
     public function orders()
     {
