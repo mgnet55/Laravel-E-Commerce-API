@@ -47,7 +47,7 @@ class CheckoutController extends ApiResponse
                 $order->city_id=$cart->city_id;
                 $order->street=$cart->street;
                 $order->shipping_company_id=$cart->shipping_company_id;
-                $order->customer_id=$cart->user_id;
+                $order->customer_id=$cart->customer_id;
                 $order->notes=$cart->notes;
                 if($order->save()) {
                     foreach ($items as $item) {
