@@ -127,7 +127,7 @@ Route::group(['prefix'=>'admin'],function (){
 
 // Sellers & Orders Control
 
-Route::prefix('super-admin')->name('super-admin')->middleware(['auth:sanctum', 'verified', 'role:super-admin','permission:create category'])->group(function(){
+Route::prefix('admin')->name('admin')->middleware(['auth:sanctum', 'verified', 'role:super-admin','permission:create category'])->group(function(){
 
     Route::group(['prefix' => 'orders'], function () {
         Route::get('unfulfilled',[OrderController::class, 'unfulfilled']);
