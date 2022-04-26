@@ -27,7 +27,6 @@ return new class extends Migration
                 ->on('users')
                 ->onupdate('cascade')
                 ->onDelete('set null');
-
         });
     }
 
