@@ -114,5 +114,31 @@ Route::group(['prefix' => 'customer', 'middleware' => ['auth:sanctum', 'role:cus
     });
 });
 
-
 Route::post('checkout', [CheckoutController::class, 'charge'])->middleware('auth:sanctum');
+
+// Sellers & Orders Control
+
+Route::prefix('super-admin')->name('super-admin')->middleware(['auth:sanctum', 'verified', 'role:super-admin','permission:create category'])->group(function(){
+
+    Route::group(['prefix' => 'orders'], function () {
+        Route::get('unfulfilled',[OrderController::class, 'unfulfilled']);
+        Route::get('fulfilled',[OrderController::class, 'fulfilled']);
+        Route::get('onwayorders',[OrderController::class, 'onWayOrders']);
+        Route::get('processing',[OrderController::class, 'processingOrders']);
+
+        Route::get('setonway/{order}',[OrderController::class, 'setOnWay']);
+        Route::get('setdone/{order}',[OrderController::class, 'setDone']);
+        Route::get('/{order}',[OrderController::class, 'orderDetails']);
+    });
+
+    Route::group(['prefix' => 'sellers'], function () {
+        Route::get('/{product}',[UserController::class, 'sellerDetails']); // Bring seller details from it's product
+        Route::get('/',[UserController::class, 'index']);
+        Route::get('/stateUpdate/{seller}',[UserController::class, 'updateActiveState']); //set status active and vise versa
+    });
+
+});
+
+
+
+

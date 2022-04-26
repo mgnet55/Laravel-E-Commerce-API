@@ -23,12 +23,9 @@ class OrderItems extends Model
 //           ];
 
     protected $hidden=[
-        'fulfilled',
         'updated_at',
         'customer_id',
-        'order_id',
         'updated_at',
-
         ];
 
     protected $casts=[
