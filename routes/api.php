@@ -116,6 +116,15 @@ Route::group(['prefix' => 'customer', 'middleware' => ['auth:sanctum', 'role:cus
 
 Route::post('checkout', [CheckoutController::class, 'charge'])->middleware('auth:sanctum');
 
+Route::group(['prefix'=>'admin'],function (){
+    Route::apiResource('roles',\App\Http\Controllers\RoleController::class);
+    Route::get('permissions',function (){
+        return \Spatie\Permission\Models\Permission::all();
+    });
+    Route::apiResource('admin',\App\Http\Controllers\AdminController::class);
+});
+
+
 // Sellers & Orders Control
 
 Route::prefix('super-admin')->name('super-admin')->middleware(['auth:sanctum', 'verified', 'role:super-admin','permission:create category'])->group(function(){
@@ -138,6 +147,7 @@ Route::prefix('super-admin')->name('super-admin')->middleware(['auth:sanctum', '
     });
 
 });
+
 
 
 
