@@ -2,12 +2,29 @@
 
 namespace App\Http\Controllers;
 use App\Http\Controllers\API\ApiResponse;
+use App\Models\Customer;
 use App\Models\Order;
 use Illuminate\Support\Facades\Auth;
+use App\Models\User;
 
 
 class CustomerController extends ApiResponse
 {
+
+   public function destroy($id)
+
+    {
+
+        $customer = User::where('id', $id)->first();
+
+        // return $customer;
+
+        if ($customer->deleteOrFail()) {
+            // ImageManager::delete($customer->avatar, 'customers');
+            return $this->handleResponse($customer, 'customer deleted Successfully');
+        }
+        return $this->handleError('Failed to delete customer', ['Failed to delete customer'], 402);
+    }
      public function orders(){
 
         $orders = auth()->user()->customer->orders()->paginate(30);
