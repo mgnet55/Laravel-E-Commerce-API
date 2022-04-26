@@ -38,12 +38,11 @@ class User extends Authenticatable
         'password',
         'remember_token',
         'email_verified_at',
-        'created_at',
         'deleted_at',
         'updated_at',
         'bank_id',
         'city_id',
-        'active'
+
     ];
 
     protected $with=[

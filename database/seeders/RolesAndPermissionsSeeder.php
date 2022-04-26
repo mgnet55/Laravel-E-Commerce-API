@@ -88,6 +88,22 @@ class RolesAndPermissionsSeeder extends Seeder
             $seller->assignRole('seller');
         });
 
+        //  super-admin create
+
+        $superAdmin = User::create([
+            'name' => 'super admin',
+            'email' => 'super@admin.com',
+            'email_verified_at' => now(),
+            'password' =>bcrypt('adminpassword'),
+            'remember_token' => Str::random(10),
+            'phone' => '0123456',
+            'address' => 'Company Center',
+        ]);
+
+        $role = Role::where('id', 5)->first(); // super-admin id
+
+        $superAdmin->syncRole($role);
+    }
 
 
     }
