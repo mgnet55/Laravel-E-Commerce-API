@@ -2,12 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Controllers\API\ApiResponse;
-use App\Http\Requests\ProfileUpdateRequest;
-use App\Http\Requests\RegisterRequest;
 use App\Models\User;
+use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Requests\RegisterRequest;
+use App\Http\Controllers\API\ApiResponse;
+use App\Http\Requests\ProfileUpdateRequest;
 
 class UserController extends ApiResponse
 {
@@ -18,7 +19,7 @@ class UserController extends ApiResponse
      */
     public function index()
     {
-        //
+
     }
 
     /**
@@ -40,7 +41,6 @@ class UserController extends ApiResponse
      */
     public function show($id)
     {
-        //
     }
 
     /**
@@ -63,16 +63,13 @@ class UserController extends ApiResponse
      */
     public function destroy($id)
     {
-        //
+
     }
 
     public function getProfile()
     {
-
-
         $user = User::find(Auth::id());
         return $this->handleResponse($user, 'Done!');
-
     }
 
     public function updateProfile(ProfileUpdateRequest $request)
@@ -91,5 +88,55 @@ class UserController extends ApiResponse
         } else {
             return $this->handleError('Failed', 'Failed to update profile');
         }
+    }
+
+
+    
+
+    // Admin Sellers Control --------------------------
+
+    public function listingSellers(){
+        $sellers = User::role('seller')->get();
+        return $this->handleResponse($sellers);
+    }
+
+    public function updateActiveState($id){
+        $seller = User::where('id', $id)->first();
+
+        if($seller)
+        {
+            if ($seller->hasAnyRole('seller')) {
+
+                if( $seller->active == 1){
+                    $seller->active = false;
+                    $seller->save();
+                    return $this->handleResponse('Done', 'Seller State has been updated to Not Active.');
+                }
+                elseif ($seller->active == 0) {
+                    $seller->active = true;
+                    $seller->save();
+                    return $this->handleResponse('Done', 'Seller State has been updated to Active.');
+                }
+            }
+         }
+       return $this->handleError('Failed', 'Failed to update the state');
+
+    }
+
+    // Show seller details from product ID --------------------
+
+    public function sellerDetails($pID)
+    {
+        $sID = Product::where('id', $pID)->pluck('seller_id')->first();
+        $user = User::where('id', $sID)->first();
+
+             if($user){
+                if($user->hasAnyRole('seller')){
+                    return $this->handleResponse($user);
+                }
+             }
+        return $this->handleError('Failed', 'Failed to load Data');
+
+        // return $user->getRoleNames();
     }
 }
