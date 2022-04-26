@@ -41,6 +41,8 @@ Route::apiResource('city', CityController::class);
 
 Route::get('customers', [UserController::class,'customers']);
 Route::delete('customers/{customer}',[CustomerController::class, 'destroy']);
+Route::get('categories', [CategoryController::class,'index']);
+Route::delete('categories/{category}',[CategoryController::class, 'destroy']);
 // Shipping
 //Route::get('shippingOrders/{id}',[ShippingCompanyController::class,'getOrders']);
 
