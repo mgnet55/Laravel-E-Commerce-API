@@ -2,13 +2,20 @@
 
 namespace App\Http\Controllers;
 
+
+use App\Http\Controllers\API\ApiResponse;
+use App\Http\Requests\ProfileUpdateRequest;
+use App\Http\Requests\RegisterRequest;
+use App\Models\Customer;
 use App\Models\User;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use App\Http\Requests\RegisterRequest;
-use App\Http\Controllers\API\ApiResponse;
-use App\Http\Requests\ProfileUpdateRequest;
+use App\Classes\ImageManager;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Response;
+
+
 
 class UserController extends ApiResponse
 {
@@ -61,10 +68,12 @@ class UserController extends ApiResponse
      * @param int $id
      * @return \Illuminate\Http\Response
      */
+
     public function destroy($id)
     {
 
     }
+
 
     public function getProfile()
     {
@@ -88,6 +97,12 @@ class UserController extends ApiResponse
         } else {
             return $this->handleError('Failed', 'Failed to update profile');
         }
+    }
+
+
+    public function customers(){
+        $customers=User::whereHas("roles", function($q){ $q->where("name", "customer"); })->paginate();
+        return $this->handleResponse($customers, 'customers');
     }
 
 
@@ -139,4 +154,5 @@ class UserController extends ApiResponse
 
         // return $user->getRoleNames();
     }
+
 }

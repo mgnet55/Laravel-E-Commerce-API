@@ -39,10 +39,8 @@ Route::apiResource('governorate', GovernorateController::class);
 
 Route::apiResource('city', CityController::class);
 
-Route::get('test', function () {
-    //route for testing
-    return \App\Models\User::find(17);
-});
+Route::get('customers', [UserController::class,'customers']);
+Route::delete('customers/{customer}',[CustomerController::class, 'destroy']);
 // Shipping
 //Route::get('shippingOrders/{id}',[ShippingCompanyController::class,'getOrders']);
 

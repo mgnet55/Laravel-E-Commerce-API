@@ -26,7 +26,7 @@ return new class extends Migration
                 ->on('shipping_companies')
                 ->onDelete('set null')
                 ->onUpdate('cascade');
-            $table->foreign('user_id')
+            $table->foreign('customer_id')
                 ->references('id')
                 ->on('users')
                 ->onDelete('cascade')
