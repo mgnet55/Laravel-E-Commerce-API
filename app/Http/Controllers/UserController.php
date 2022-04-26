@@ -92,4 +92,9 @@ class UserController extends ApiResponse
             return $this->handleError('Failed', 'Failed to update profile');
         }
     }
+
+    public function customers(){
+        $customers=User::whereHas("roles", function($q){ $q->where("name", "customer"); })->paginate();
+        return $this->handleResponse($customers, 'customers');
+    }
 }

@@ -39,10 +39,7 @@ Route::apiResource('governorate', GovernorateController::class);
 
 Route::apiResource('city', CityController::class);
 
-Route::get('test', function () {
-    //route for testing
-    return \App\Models\User::find(17);
-});
+Route::get('customers', [UserController::class,'customers']);
 // Shipping
 //Route::get('shippingOrders/{id}',[ShippingCompanyController::class,'getOrders']);
 
