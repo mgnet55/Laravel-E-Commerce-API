@@ -130,10 +130,9 @@ Route::group(['prefix'=>'admin'],function (){
 Route::prefix('admin')->name('admin')->middleware(['auth:sanctum', 'verified', 'role:super-admin','permission:create category'])->group(function(){
 
     Route::group(['prefix' => 'orders'], function () {
-        Route::get('unfulfilled',[OrderController::class, 'unfulfilled']);
-        Route::get('fulfilled',[OrderController::class, 'fulfilled']);
-        Route::get('onwayorders',[OrderController::class, 'onWayOrders']);
-        Route::get('processing',[OrderController::class, 'processingOrders']);
+        Route::get('onwayorders',[OrderController::class, 'onWayOrders']); // On-way  & picked
+        Route::get('processing',[OrderController::class, 'processingOrders']); // Processing not picked
+        Route::get('picked',[OrderController::class, 'pickedOrders']);  // Processing & Picked
 
         Route::get('setonway/{order}',[OrderController::class, 'setOnWay']);
         Route::get('setdone/{order}',[OrderController::class, 'setDone']);
@@ -144,6 +143,12 @@ Route::prefix('admin')->name('admin')->middleware(['auth:sanctum', 'verified', '
         Route::get('/{product}',[UserController::class, 'sellerDetails']); // Bring seller details from it's product
         Route::get('/',[UserController::class, 'listingSellers']);
         Route::get('/stateUpdate/{seller}',[UserController::class, 'updateActiveState']); //set status active and vise versa
+    });
+
+    Route::group(['prefix' => 'payments'], function () {
+        Route::get('unfulfilled/{seller}',[OrderController::class, 'unfulfilled']);
+        Route::get('fulfilled/{seller}',[OrderController::class, 'fulfilled']);
+        Route::get('fulfill/{id}',[OrderController::class, 'setFulfilled']);
     });
 
 });
