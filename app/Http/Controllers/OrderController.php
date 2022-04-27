@@ -108,6 +108,7 @@ class OrderController extends ApiResponse
       // --------------------- Orders Functions---------------------------------------
 
     public function setOnWay(Order $order){
+        
         if ($order->status == 'Processing') {
             $order->status = 'on way';
             $order->save();
