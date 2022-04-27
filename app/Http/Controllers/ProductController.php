@@ -33,6 +33,16 @@ class ProductController extends ApiResponse
         return $this->handleResponse($products, 'products');
     }
 
+    function allProducts(): JsonResponse
+    {
+        $name = request()->query('search', 'none');
+        $products;
+        if ($name != 'none') {
+            return $this->handleResponse(Product::where('name', 'LIKE', "%{$name}%")->orderBy('id', 'desc')->with('category:id,name')->paginate(30), 'products search');
+        } else
+            return $this->handleResponse(Product::orderBy('id', 'desc')->with('category:id,name')->paginate(30), 'products');
+    }
+
     function productsByCategory($category_id)
     {
 
@@ -78,10 +88,10 @@ class ProductController extends ApiResponse
     public function show(Product $product)
     {
         // return $this->handleResponse($product, 'product');
-    //    return  auth()->user()->seller->products()->where('id' == $product->id)->get();
+        //    return  auth()->user()->seller->products()->where('id' == $product->id)->get();
         //  return $product->seller_id;
-        
-            return $this->handleResponse($product, 'Product Details');
+
+        return $this->handleResponse($product, 'Product Details');
     }
 
     /**
@@ -114,18 +124,27 @@ class ProductController extends ApiResponse
      * @throws Throwable
      */
 
-    function destroy(Product $product)
+    function destroy(Product $product): JsonResponse
     {
-        if (Auth::user()->hasPermissionTo('delete product')) {
-            if ($product->deleteOrFail()) {
-                ImageManager::delete($product->image, 'products');;
-                return $this->handleResponse($product, 'Product deleted Successfully');
-            }
-            return $this->handleError('Failed to save product', ['Failed to save product'], 402);
+        if ($product->deleteOrFail()) {
+            ImageManager::delete($product->image, 'products');;
+            return $this->handleResponse($product, 'Product deleted Successfully');
         }
-        return $this->handleError('Unauthorized', ["You don't have the permission to update product"], 403);
-
+        return $this->handleError('Failed to save product', ['Failed to save product'], 402);
     }
+
+
+    function orders(Product $product): JsonResponse
+    {
+        $productOrders = $product->ordered()->get();
+        $product->seller = $product->seller()->get(['id', 'name']);
+        return $this->handleResponse(['product' => $product, 'orderItems' => $productOrders], 'product with orders');
+    }
+
+    function deleted(){
+        return $this->handleResponse(Product::onlyTrashed()->orderBy('id', 'desc')->with('category:id,name')->paginate(30), 'trashed products');
+    }
+
 
 
 

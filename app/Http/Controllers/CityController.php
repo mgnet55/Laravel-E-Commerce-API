@@ -5,16 +5,18 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\API\ApiResponse;
 use App\Http\Requests\CityRequest;
 use App\Models\City;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 
 class CityController extends ApiResponse
 {
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return JsonResponse
      */
-    public function index()
+    public function index(): JsonResponse
     {
         return $this->handleResponse(City::all(),'cites');
     }
@@ -22,8 +24,8 @@ class CityController extends ApiResponse
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @param CityRequest $request
+     * @return JsonResponse
      */
     public function store(CityRequest $request)
     {
@@ -45,21 +47,22 @@ class CityController extends ApiResponse
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param City $city
+     * @return JsonResponse
      */
-    public function show(City $city)
+    public function show(City $city): JsonResponse
     {
         return $this->handleResponse($city,'city');
     }
+
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param CityRequest $request
+     * @param City $city
+     * @return JsonResponse
      */
-    public function update(CityRequest $request,City $city)
+    public function update(CityRequest $request,City $city): JsonResponse
     {
         $city->update([
             'name'=>$request->get('name'),
@@ -71,10 +74,10 @@ class CityController extends ApiResponse
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param City $city
+     * @return JsonResponse
      */
-    public function destroy(City $city)
+    public function destroy(City $city): JsonResponse
     {
         $city->delete();
         return $this->handleResponse('city','city deleted successfully');

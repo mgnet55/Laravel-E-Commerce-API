@@ -2,46 +2,60 @@
 
 namespace App\Models;
 
+use Eloquent;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
+/**
+ * @mixin Eloquent
+ */
 class Product extends Model
 {
-    use HasFactory;
+    use SoftDeletes, HasFactory;
 
     protected $fillable = [
-        'name', 'description','quantity','price','image','seller_id','category_id','available'
+        'name', 'description', 'quantity', 'price', 'image', 'seller_id', 'category_id', 'available'
     ];
 
-    protected $casts=[
-      'available'=>'boolean'
+    protected $casts = [
+        'available' => 'boolean'
 
     ];
 
-    protected $appends=[
+    protected $appends = [
         'soldCount',
         'salePrice'
     ];
 
-    protected $hidden=[
+    protected $hidden = [
         'created_at', 'updated_at'
     ];
 
-    function seller(){
+    public function seller()
+    {
         return $this->belongsTo(Seller::class);
     }
 
-    function category(){
+    public function category()
+    {
         return $this->belongsTo(Category::class);
     }
 
-    function getSoldCountAttribute(){
-        return OrderItems::where('product_id','=',$this->id)->sum('quantity');
+    function getSoldCountAttribute()
+    {
+        return OrderItems::where('product_id', '=', $this->id)->sum('quantity');
     }
 
     public function getSalePriceAttribute(): float|int
     {
-        return $this->price*(1-$this->discount);
+        return $this->price * (1 - $this->discount);
     }
+
+    public function ordered()
+    {
+        return $this->hasMany(OrderItems::class);
+    }
+
 
 }

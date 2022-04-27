@@ -31,6 +31,9 @@ use Illuminate\Support\Facades\Route;
 // });
 
 // Products resource
+Route::get('products/all',[ProductController::class,'allProducts']);
+Route::get('products/trashed',[ProductController::class,'deleted']);
+
 Route::apiResource("/products", ProductController::class);
 Route::get('products/category/{id}', [ProductController::class, 'productsByCategory']);
 //location-models
@@ -39,10 +42,13 @@ Route::apiResource('governorate', GovernorateController::class);
 
 Route::apiResource('city', CityController::class);
 
+Route::get('products/{product}/orders',[ProductController::class,'orders']);
+
 Route::get('customers', [UserController::class,'customers']);
 Route::delete('customers/{customer}',[CustomerController::class, 'destroy']);
 Route::get('categories', [CategoryController::class,'index']);
 Route::delete('categories/{category}',[CategoryController::class, 'destroy']);
+
 // Shipping
 //Route::get('shippingOrders/{id}',[ShippingCompanyController::class,'getOrders']);
 
