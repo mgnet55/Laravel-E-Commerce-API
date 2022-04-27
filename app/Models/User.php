@@ -57,13 +57,12 @@ class User extends Authenticatable
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
-        'phone'=>'integer'
+        'phone'=>'string'
     ];
 
 
     public function customer()
     {
-        if (auth()->user()->hasRole('customer'))
         return $this->belongsTo(Customer::class, 'id');
     }
 

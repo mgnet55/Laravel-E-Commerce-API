@@ -31,6 +31,9 @@ use Illuminate\Support\Facades\Route;
 // });
 
 // Products resource
+Route::get('products/all',[ProductController::class,'allProducts']);
+Route::get('products/trashed',[ProductController::class,'deleted']);
+
 Route::apiResource("/products", ProductController::class);
 Route::get('products/category/{id}', [ProductController::class, 'productsByCategory']);
 //location-models
@@ -39,10 +42,7 @@ Route::apiResource('governorate', GovernorateController::class);
 
 Route::apiResource('city', CityController::class);
 
-Route::get('test', function () {
-    //route for testing
-    return \App\Models\User::find(17);
-});
+Route::get('products/{product}/orders',[ProductController::class,'orders']);
 // Shipping
 //Route::get('shippingOrders/{id}',[ShippingCompanyController::class,'getOrders']);
 
