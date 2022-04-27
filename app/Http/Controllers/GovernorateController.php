@@ -22,7 +22,6 @@ class GovernorateController extends ApiResponse
     public function index(): JsonResponse
     {
         return $this->handleResponse(Governorate::with('cities')->get());
-
     }
 
     /**

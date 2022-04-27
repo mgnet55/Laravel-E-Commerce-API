@@ -43,6 +43,12 @@ Route::apiResource('governorate', GovernorateController::class);
 Route::apiResource('city', CityController::class);
 
 Route::get('products/{product}/orders',[ProductController::class,'orders']);
+
+Route::get('customers', [UserController::class,'customers']);
+Route::delete('customers/{customer}',[CustomerController::class, 'destroy']);
+Route::get('categories', [CategoryController::class,'index']);
+Route::delete('categories/{category}',[CategoryController::class, 'destroy']);
+
 // Shipping
 //Route::get('shippingOrders/{id}',[ShippingCompanyController::class,'getOrders']);
 
@@ -114,5 +120,46 @@ Route::group(['prefix' => 'customer', 'middleware' => ['auth:sanctum', 'role:cus
     });
 });
 
-
 Route::post('checkout', [CheckoutController::class, 'charge'])->middleware('auth:sanctum');
+
+Route::group(['prefix'=>'admin'],function (){
+    Route::apiResource('roles',\App\Http\Controllers\RoleController::class);
+    Route::get('permissions',function (){
+        return \Spatie\Permission\Models\Permission::all();
+    });
+    Route::apiResource('admin',\App\Http\Controllers\AdminController::class);
+});
+
+
+// Sellers & Orders Control
+
+Route::prefix('admin')->name('admin')->middleware(['auth:sanctum', 'verified', 'role:super-admin','permission:create category'])->group(function(){
+
+    Route::group(['prefix' => 'orders'], function () {
+        Route::get('onwayorders',[OrderController::class, 'onWayOrders']); // On-way  & picked
+        Route::get('processing',[OrderController::class, 'processingOrders']); // Processing not picked
+        Route::get('picked',[OrderController::class, 'pickedOrders']);  // Processing & Picked
+
+        Route::get('setonway/{order}',[OrderController::class, 'setOnWay']);
+        Route::get('setdone/{order}',[OrderController::class, 'setDone']);
+        Route::get('/{order}',[OrderController::class, 'orderDetails']);
+    });
+
+    Route::group(['prefix' => 'sellers'], function () {
+        Route::get('/{product}',[UserController::class, 'sellerDetails']); // Bring seller details from it's product
+        Route::get('/',[UserController::class, 'listingSellers']);
+        Route::get('/stateUpdate/{seller}',[UserController::class, 'updateActiveState']); //set status active and vise versa
+    });
+
+    Route::group(['prefix' => 'payments'], function () {
+        Route::get('unfulfilled/{seller}',[OrderController::class, 'unfulfilled']);
+        Route::get('fulfilled/{seller}',[OrderController::class, 'fulfilled']);
+        Route::get('fulfill/{id}',[OrderController::class, 'setFulfilled']);
+    });
+
+});
+
+
+
+
+

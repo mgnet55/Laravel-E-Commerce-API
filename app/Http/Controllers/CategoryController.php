@@ -67,9 +67,15 @@ class CategoryController extends ApiResponse
 
     public function update(CategoryRequest $request, Category $category)
     {
+        if($request->image)
+        {
+            $request->file('image')->storeAs('', name: $category->image, options: 'categories');
+            if ($category->updateOrFail($request->except('image'))) {
+                return $this->handleResponse($category, 'Category updated successfully');
+            }
+        }
 
-        ImageManager::update($request, 'image', $category->image, 'categories');
-        if ($category->updateOrFail($request->all())) {
+        if ($category->updateOrFail($request->except('image'))) {
             return $this->handleResponse($category, 'Category updated successfully');
         }
         return $this->handleError('Failed', 'Failed to update category');
