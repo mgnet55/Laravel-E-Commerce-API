@@ -33,7 +33,7 @@ class ImageManager
     {
         if ($request->hasFile($formInputName)) {
             $request->file($formInputName)->storeAs('', name: $currentName, options: $driver);
-            $request->offsetUnset($formInputName);
+            $request->request->remove($formInputName);
             return true;
         }
         return false;
