@@ -20,7 +20,7 @@ class CategoryController extends ApiResponse
      */
     public function index()
     {
-        $categories = Category::paginate();
+        $categories = Category::all();
         return $this->handleResponse($categories, 'categories');
     }
 

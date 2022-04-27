@@ -35,9 +35,11 @@ class CartController extends ApiResponse
                 'totalQuantity'=>$totalQuantity], 'cart');
         }
         $cart=new Cart();
-        $cart->user_id=auth()->user()->id;
+        $cart->customer_id=auth()->user()->id;
         $cart->save();
-        return $this->handleResponse(['cart'=>$cart],'cart');
+        return $this->handleResponse(['cart'=>$cart,'items'=>[],
+            'totalPrice'=>0,
+            'totalQuantity'=>0], 'cart');
     }
     public function addItem(Product $product,Request $request)
     {
