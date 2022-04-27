@@ -106,12 +106,12 @@ class UserController extends ApiResponse
     }
 
 
-    
+
 
     // Admin Sellers Control --------------------------
 
     public function listingSellers(){
-        $sellers = User::role('seller')->get();
+        $sellers = User::role('seller')->latest()->paginate(10);
         return $this->handleResponse($sellers);
     }
 
