@@ -142,7 +142,7 @@ Route::prefix('admin')->name('admin')->middleware(['auth:sanctum', 'verified', '
 
     Route::group(['prefix' => 'sellers'], function () {
         Route::get('/{product}',[UserController::class, 'sellerDetails']); // Bring seller details from it's product
-        Route::get('/',[UserController::class, 'index']);
+        Route::get('/',[UserController::class, 'listingSellers']);
         Route::get('/stateUpdate/{seller}',[UserController::class, 'updateActiveState']); //set status active and vise versa
     });
 
