@@ -44,7 +44,7 @@ class AuthController extends ApiResponse
             'avatar' => $input['avatar']
         ];
         ImageManager::upload($request, 'avatar', 'profiles', $input['avatar']);
-        $user->assignRole('seller');
+        $user->assignRole($role);
         return $this->handleResponse($data, 'User successfully registered!');
     }
 
