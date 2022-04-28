@@ -12,7 +12,7 @@ class ImageManager
     {
         if ($request->hasFile($formInputName)) {
             $fileName = $prefix ?? $formInputName;
-            $fileName .= '_' . time().'.' . $request->file($formInputName)->extension();
+            $fileName .= '_' . time() . '.' . $request->file($formInputName)->extension();
             return $fileName;
         }
         return null;
@@ -23,7 +23,7 @@ class ImageManager
         if ($request->hasFile($formInputName)) {
             $fileName = $fileName ?? self::generateName($request, $formInputName);
             $request->file($formInputName)->storeAs('', name: $fileName, options: $driver);
-            $request->offsetUnset($formInputName);
+            $request->request->remove($formInputName);
             return $fileName;
         }
         return null;
@@ -33,7 +33,7 @@ class ImageManager
     {
         if ($request->hasFile($formInputName)) {
             $request->file($formInputName)->storeAs('', name: $currentName, options: $driver);
-            $request->offsetUnset($formInputName);
+            $request->request->remove($formInputName);
             return true;
         }
         return false;

@@ -61,7 +61,6 @@ class User extends Authenticatable
 
     public function customer()
     {
-        if (auth()->user()->hasRole('customer'))
         return $this->belongsTo(Customer::class, 'id');
     }
 
