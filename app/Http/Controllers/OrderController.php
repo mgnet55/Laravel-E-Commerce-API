@@ -99,7 +99,7 @@ class OrderController extends ApiResponse
     public function orderDetails($id){
         $orders = DB::table('order_items')
             ->where('order_id', $id)
-            ->select('product_id', 'created_at', 'price', 'picked', 'fulfilled', 'quantity')
+            ->select('product_id', 'name','created_at', 'price', 'picked', 'fulfilled', 'quantity')
             ->latest()->paginate(10);
 
         return $this->handleResponse($orders);
@@ -108,7 +108,7 @@ class OrderController extends ApiResponse
       // --------------------- Orders Functions---------------------------------------
 
     public function setOnWay(Order $order){
-        
+
         if ($order->status == 'Processing') {
             $order->status = 'on way';
             $order->save();
