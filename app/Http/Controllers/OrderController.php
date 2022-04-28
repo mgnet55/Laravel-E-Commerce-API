@@ -99,7 +99,7 @@ class OrderController extends ApiResponse
     public function orderDetails($id){
         $orders = DB::table('order_items')
             ->where('order_id', $id)
-            ->select('product_id', 'name','created_at', 'price', 'picked', 'fulfilled', 'quantity')
+            ->select('id','product_id', 'name','created_at', 'price', 'picked', 'fulfilled', 'quantity')
             ->latest()->paginate(10);
 
         return $this->handleResponse($orders);
@@ -140,5 +140,19 @@ class OrderController extends ApiResponse
 
         return $this->handleError('Failed', ["Failed to update status"], 402);
     }
+
+    public function setPicked($id){
+
+        $item = OrderItems::where('id', $id)->first();
+
+        if($item->picked == 0){
+            $item->picked = 1;
+            $item->save();
+            return $this->handleResponse('Success', 'Picked Status Updated Successfully!');
+        }
+
+        return $this->handleError('Failed', ["Failed to update status"], 402);
+    }
+
 
 }

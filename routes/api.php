@@ -137,6 +137,8 @@ Route::prefix('admin')->name('admin')->middleware(['auth:sanctum', 'verified', '
         Route::get('setonway/{order}',[OrderController::class, 'setOnWay']);
         Route::get('setdone/{order}',[OrderController::class, 'setDone']);
         Route::get('/{order}',[OrderController::class, 'orderDetails']);
+        Route::get('setpicked/{item}',[OrderController::class, 'setPicked']);
+
     });
 
     Route::group(['prefix' => 'sellers'], function () {
