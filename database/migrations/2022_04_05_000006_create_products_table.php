@@ -33,11 +33,11 @@ return new class extends Migration
                   ->onupdate('cascade')
                   ->onDelete('cascade');
 
-            // $table->foreign('category_id')
-            //       ->references('id')
-            //       ->on('categories')
-            //       ->onupdate('cascade')
-            //       ->onDelete('set default');
+             $table->foreign('category_id')
+                   ->references('id')
+                   ->on('categories')
+                   ->onupdate('cascade')
+                   ->onDelete('set default');
         });
     }
 

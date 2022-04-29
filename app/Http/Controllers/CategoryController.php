@@ -6,6 +6,7 @@ use App\Classes\ImageManager;
 use App\Http\Controllers\API\ApiResponse;
 use App\Http\Requests\CategoryRequest;
 use App\Models\Category;
+use App\Models\Product;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
@@ -97,6 +98,7 @@ class CategoryController extends ApiResponse
 
     public function destroy(Category $category): JsonResponse
     {
+        Product::whereCategoryId($category->id)->update(['category_id'=>1]);
         $imageName = $category->image;
         if ($category->deleteOrFail()) {
             if (File::exists(public_path('categories/' . $imageName))) {

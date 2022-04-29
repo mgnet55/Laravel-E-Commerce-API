@@ -25,9 +25,9 @@ class ProductController extends ApiResponse
         $name = request()->query('search', 'none');
         //return $name;
         if ($name != 'none') {
-            $products = Product::where('name', 'LIKE', "%{$name}%")->where('available', '>', 0)->orderBy('id', 'desc')->with('category:id,name')->paginate(30);
+            $products = Product::where('name', 'LIKE', "%{$name}%")->where('available', '>', 0)->orderBy('id', 'desc')->with('category:id,name')->paginate(24);
         } else {
-            $products = Product::latest()->where('available', '=', true)->with('category:id,name')->paginate(30);
+            $products = Product::latest()->where('available', '=', true)->with('category:id,name')->paginate(24);
 
         }
         return $this->handleResponse($products, 'products');
@@ -38,15 +38,15 @@ class ProductController extends ApiResponse
         $name = request()->query('search', 'none');
         $products;
         if ($name != 'none') {
-            return $this->handleResponse(Product::where('name', 'LIKE', "%{$name}%")->orderBy('id', 'desc')->with('category:id,name')->paginate(30), 'products search');
+            return $this->handleResponse(Product::where('name', 'LIKE', "%{$name}%")->orderBy('id', 'desc')->with('category:id,name')->paginate(24), 'products search');
         } else
-            return $this->handleResponse(Product::orderBy('id', 'desc')->with('category:id,name')->paginate(30), 'products');
+            return $this->handleResponse(Product::orderBy('id', 'desc')->with('category:id,name')->paginate(24), 'products');
     }
 
     function productsByCategory($category_id)
     {
 
-        $products = Product::where('available', '=', true)->where('category_id', '=', $category_id)->orderBy('id', 'desc')->with('category:id,name')->paginate(30);
+        $products = Product::where('available', '=', true)->where('category_id', '=', $category_id)->orderBy('id', 'desc')->with('category:id,name')->paginate(24);
 
         return $this->handleResponse($products, 'products');
 
@@ -142,7 +142,7 @@ class ProductController extends ApiResponse
     }
 
     function deleted(){
-        return $this->handleResponse(Product::onlyTrashed()->orderBy('id', 'desc')->with('category:id,name')->paginate(30), 'trashed products');
+        return $this->handleResponse(Product::onlyTrashed()->orderBy('id', 'desc')->with('category:id,name')->paginate(24), 'trashed products');
     }
 
 
@@ -153,7 +153,7 @@ class ProductController extends ApiResponse
         $flashSale=Product::where('available', '=', true)->where('discount','>',0.69)->get();
         $sale50=Product::where('available', '=', true)->where('discount','<',0.51)->get();
         $best70=Product::where('available', '=', true)->whereBetween('discount',[0.51,0.71])->get();
-        $lastProduct=Product::latest()->where('available', '=', true)->paginate(30);
+        $lastProduct=Product::latest()->where('available', '=', true)->paginate(24);
         return $this->handleResponse([
             'sale50'=>$sale50,
             'best70'=>$best70,
