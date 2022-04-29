@@ -13,7 +13,7 @@ class AdminController extends ApiResponse
 {
     public function index()
     {
-        $admins=User::whereHas("roles", function($q){ $q->where("name","super-admin"); })->with('roles')->paginate(3);
+        $admins=User::whereHas("roles", function($q){ $q->where("name","admin"); })->with('roles')->paginate(3);
         return $this->handleResponse($admins,'admins');
     }
     public function show(User $admin)
