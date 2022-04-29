@@ -78,6 +78,7 @@ class UserController extends ApiResponse
     public function getProfile()
     {
         $user = User::find(Auth::id());
+        
         return $this->handleResponse($user, 'Done!');
     }
 

@@ -103,6 +103,20 @@ class SellerController extends ApiResponse
     }
 
 
+
+
+    //  Seller Dashboard Orders Count
+
+public function ordersDataCount(): \Illuminate\Http\JsonResponse
+{
+    $ordersDataCounts = [
+
+        'pendingOrders' => Auth::user()->seller->pendingOrders()->count(),
+        'pickedOrders' => Auth::user()->seller->pickedOrders()->count(),
+        'fulfilled' => Auth::user()->seller->pendingOrders()->count(),
+        'unfulfilled' => Auth::user()->seller->pendingOrders()->count(),
+    ];
+    return $this->handleResponse($ordersDataCounts);
 }
 
-
+}
