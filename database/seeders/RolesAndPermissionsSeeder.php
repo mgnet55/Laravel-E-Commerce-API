@@ -2,9 +2,11 @@
 
 namespace Database\Seeders;
 
+use App\Models\User;
+use Illuminate\Support\Str;
 use Illuminate\Database\Seeder;
-use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
+use Spatie\Permission\Models\Permission;
 
 class RolesAndPermissionsSeeder extends Seeder
 {
@@ -73,7 +75,8 @@ class RolesAndPermissionsSeeder extends Seeder
 //        $role = Role::create(['name' => 'super-admin']);
 
         Role::create(['name' => 'super-admin']);
-        //$role->givePermissionTo(Permission::all());
+        $role = Role::create(['name' => 'admin']);
+        $role->givePermissionTo(Permission::all());
 
 
         \App\Models\User::all()->reject(function ($customer) {
@@ -100,11 +103,28 @@ class RolesAndPermissionsSeeder extends Seeder
             'address' => 'Company Center',
         ]);
 
-        $role = Role::where('id', 5)->first(); // super-admin id
+        $role = Role::where('name', 'super-admin')->first(); // super-admin id
 
-        $superAdmin->syncRole($role);
+        // $superAdmin->syncRole($role);
+
+        // Admin create
+
+        $admin = User::create([
+            'name' => 'admin',
+            'email' => 'admin@admin.com',
+            'email_verified_at' => now(),
+            'password' =>bcrypt('adminpassword'),
+            'remember_token' => Str::random(10),
+            'phone' => '0123456',
+            'address' => 'Company Center',
+        ]);
+
+        $role = Role::where('name', 'admin')->first(); // super-admin id
+
+        // $admin->syncRole($role);
     }
 
 
-    }
+
+
 }

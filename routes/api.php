@@ -93,6 +93,8 @@ Route::group(['prefix' => 'seller', 'middleware' => ['auth:sanctum', 'role:selle
         Route::get('pending', [SellerController::class, 'pendingOrders']);
         Route::get('picked', [SellerController::class, 'pickedOrders']);
         Route::get('/', [SellerController::class, 'allOrders']);
+        Route::get('ordersdatacount', [SellerController::class, 'ordersDataCount']);
+
     });
     Route::group(['prefix' => 'payments'], function () {
         Route::get('fulfilled', [SellerController::class, 'fulfilled']);
