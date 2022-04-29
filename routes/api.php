@@ -166,6 +166,9 @@ Route::prefix('admin')->name('admin')->middleware(['auth:sanctum', 'verified', '
 });
 
 
+Route::get('product/statistic',[ProductController::class,'statistic']);
+
+
 
 
 

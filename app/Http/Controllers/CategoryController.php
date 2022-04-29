@@ -7,6 +7,7 @@ use App\Http\Controllers\API\ApiResponse;
 use App\Http\Requests\CategoryRequest;
 use App\Models\Category;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
 use Throwable;
 
@@ -18,8 +19,13 @@ class CategoryController extends ApiResponse
      *
      * @return JsonResponse
      */
-    public function index()
+    public function index(Request $request)
     {
+        if($request->page)
+        {
+            $categories = Category::paginate();
+            return $this->handleResponse($categories, 'categories');
+        }
         $categories = Category::all();
         return $this->handleResponse($categories, 'categories');
     }

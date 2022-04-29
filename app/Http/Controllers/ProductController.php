@@ -148,4 +148,17 @@ class ProductController extends ApiResponse
 
 
 
+    public function statistic()
+    {
+        $flashSale=Product::where('available', '=', true)->where('discount','>',0.69)->get();
+        $sale50=Product::where('available', '=', true)->where('discount','<',0.51)->get();
+        $best70=Product::where('available', '=', true)->whereBetween('discount',[0.51,0.71])->get();
+        $lastProduct=Product::latest()->where('available', '=', true)->paginate(30);
+        return $this->handleResponse([
+            'sale50'=>$sale50,
+            'best70'=>$best70,
+            'lastProduct'=>$lastProduct,
+            'flashSale'=>$flashSale
+        ],'data');
+    }
 }
