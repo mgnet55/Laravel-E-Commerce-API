@@ -159,6 +159,8 @@ Route::prefix('admin')->name('admin')->middleware(['auth:sanctum', 'verified', '
         Route::get('unfulfilled/{seller}',[OrderController::class, 'unfulfilled']);
         Route::get('fulfilled/{seller}',[OrderController::class, 'fulfilled']);
         Route::get('fulfill/{id}',[OrderController::class, 'setFulfilled']);
+        Route::get('allfulfilled',[OrderController::class, 'allFulfilled']);
+        Route::get('allunfulfilled',[OrderController::class, 'allUnfulfilled']);
     });
 
 });

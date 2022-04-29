@@ -40,9 +40,7 @@ class User extends Authenticatable
         'email_verified_at',
         'deleted_at',
         'updated_at',
-        'bank_id',
         'city_id',
-
     ];
 
     protected $with=[

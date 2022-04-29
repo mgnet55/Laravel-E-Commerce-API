@@ -53,6 +53,20 @@ class OrderController extends ApiResponse
         return $this->handleResponse($orders);
     }
 
+    // Listing All Payments
+
+    public function allFulfilled(){
+
+        $fulfilledOrders = OrderItems::where('fulfilled', false)->latest()->paginate(10);
+        return $this->handleResponse($fulfilledOrders);
+    }
+
+    public function allUnfulfilled(){
+
+        $unfulfilledOrders = OrderItems::where('fulfilled', false)->where('picked', '=', true)->paginate(10);
+        return $this->handleResponse($unfulfilledOrders);
+    }
+
     // --------------------- Orders---------------------------------------
 
     // Processing orders & not  picked------------------
